@@ -1,0 +1,386 @@
+/* ============================================================
+   Qiyen Toolbox — Global Styles
+   全域樣式：CSS 變數、Reset、Typography、深淺色主題
+   ============================================================ */
+
+/* NOTE: 使用 Google Fonts Inter 作為英文字體，搭配系統中文字體堆疊 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ---- CSS Reset ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.07), transparent 70%);
+  background-size: 28px 28px, 100% 100%;
+  background-attachment: fixed;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme="dark"] body {
+  background-image:
+    radial-gradient(rgba(96, 165, 250, 0.07) 1px, transparent 1px),
+    radial-gradient(ellipse 85% 60% at 50% -20%, rgba(59, 130, 246, 0.16), transparent 70%);
+  background-size: 28px 28px, 100% 100%;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-size: inherit;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* ---- Design Tokens（淺色主題 — 預設） ---- */
+:root {
+  /* 主要顏色 */
+  --color-bg: #f0f4f8;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f8fafc;
+  --color-surface-elevated: #ffffff;
+
+  /* 文字顏色 */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-text-inverse: #f8fafc;
+
+  /* 強調色與科技感 */
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
+  --color-accent-light: #dbeafe;
+  --color-accent-subtle: #eff6ff;
+  --color-accent-gradient: linear-gradient(135deg, #3b82f6, #6366f1);
+  --color-tech-cyan: #06b6d4;
+  --color-tech-purple: #8b5cf6;
+  --color-tech-gradient: linear-gradient(135deg, #06b6d4, #3b82f6 50%, #8b5cf6);
+  --glow-accent: 0 0 20px rgba(59, 130, 246, 0.25);
+  --glow-cyan: 0 0 20px rgba(6, 182, 212, 0.3);
+
+  /* 功能色 */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
+
+  /* 邊框 */
+  --color-border: #e2e8f0;
+  --color-border-hover: #cbd5e1;
+
+  /* 陰影 */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --shadow-xl: 0 16px 48px rgba(15, 23, 42, 0.16);
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 8px 24px rgba(15, 23, 42, 0.12);
+
+  /* 圓角 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* 間距 */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* 版面 */
+  --content-max-width: 1280px;
+  --navbar-height: 64px;
+
+  /* 動畫 */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.4s ease;
+
+  /* Navbar 背景 */
+  --navbar-bg: rgba(255, 255, 255, 0.82);
+  --navbar-border: rgba(226, 232, 240, 0.8);
+
+  /* 搜尋框 */
+  --search-bg: #f1f5f9;
+  --search-bg-focus: #ffffff;
+
+  /* 分類標籤 */
+  --tag-bg: #f1f5f9;
+  --tag-bg-active: var(--color-accent);
+  --tag-text: var(--color-text-secondary);
+  --tag-text-active: #ffffff;
+
+  /* 滾動條 */
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-track: transparent;
+}
+
+/* ---- 深色主題 ---- */
+[data-theme="dark"] {
+  --color-bg: #0b1120;
+  --color-surface: #151e2f;
+  --color-surface-hover: #1a253a;
+  --color-surface-elevated: #1e293b;
+
+  --color-text-primary: #e8edf5;
+  --color-text-secondary: #8b9dc3;
+  --color-text-tertiary: #5b6d8a;
+  --color-text-inverse: #0f172a;
+
+  --color-accent: #60a5fa;
+  --color-accent-hover: #93c5fd;
+  --color-accent-light: rgba(96, 165, 250, 0.15);
+  --color-accent-subtle: rgba(96, 165, 250, 0.08);
+  --color-accent-gradient: linear-gradient(135deg, #60a5fa, #818cf8);
+  --color-tech-cyan: #22d3ee;
+  --color-tech-purple: #a78bfa;
+  --color-tech-gradient: linear-gradient(135deg, #22d3ee, #60a5fa 50%, #a78bfa);
+  --glow-accent: 0 0 24px rgba(96, 165, 250, 0.35);
+  --glow-cyan: 0 0 24px rgba(34, 211, 238, 0.4);
+
+  --color-success: #34d399;
+  --color-success-light: rgba(52, 211, 153, 0.15);
+  --color-warning: #fbbf24;
+  --color-warning-light: rgba(251, 191, 36, 0.15);
+  --color-error: #f87171;
+  --color-error-light: rgba(248, 113, 113, 0.15);
+
+  --color-border: #1e3050;
+  --color-border-hover: #2d4a6f;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  --navbar-bg: rgba(11, 17, 32, 0.85);
+  --navbar-border: rgba(30, 48, 80, 0.8);
+
+  --search-bg: #1a253a;
+  --search-bg-focus: #1e293b;
+
+  --tag-bg: #1a253a;
+  --tag-bg-active: var(--color-accent);
+  --tag-text: var(--color-text-secondary);
+  --tag-text-active: #0f172a;
+
+  --scrollbar-thumb: #2d4a6f;
+  --scrollbar-track: transparent;
+}
+
+/* ---- Typography Scale ---- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4 {
+  font-size: 1.125rem;
+}
+
+/* ---- Custom Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* ---- 全域容器 ---- */
+.container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+/* ---- 選取文字顏色 ---- */
+::selection {
+  background-color: var(--color-accent);
+  color: #ffffff;
+}
+
+/* ---- 無障礙：鍵盤 Focus 樣式 ---- */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- 動畫關鍵幀 ---- */
+
+/* 卡片淡入 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toast 滑入 */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Toast 滑出 */
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* 脈動效果（用於載入或強調） */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* 旋轉（用於載入指示器） */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hero 圖標浮動呼吸效果 */
+@keyframes heroIconFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: translateY(-6px) rotate(4deg) scale(1.05);
+  }
+}
+
+/* 標題漸層流光效果 */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}

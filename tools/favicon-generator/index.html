@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Favicon 產生器 — 上傳圖片一鍵自動裁切生成 16x16、32x32、Apple Touch Icon、Android PWA 圖示與標準 favicon.ico，支援打包 ZIP 下載。">
+  <title>Favicon 產生器 (Favicon Generator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Favicon 產生器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">Favicon 產生器</span>
+            <span class="tool-header__title-en">Favicon Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">網頁開發必備！上傳 Logo 或圖片，自動裁切產生全套 Favicon、Apple Touch Icon 與標準 HTML 引用代碼。</p>
+      </header>
+
+      <!-- 圖片上傳區 -->
+      <div class="tool-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept="image/*" style="display: none;">
+          <div class="file-drop-zone__icon">🌐</div>
+          <div class="file-drop-zone__text">點擊選擇網站 Logo，或將圖片拖曳至此處</div>
+          <div class="file-drop-zone__hint">建議上傳 512×512 以上正方形透明 PNG 以獲得最佳效果</div>
+        </div>
+      </div>
+
+      <!-- 各尺寸預覽與下載區 -->
+      <div class="tool-section" id="result-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title">全套 Favicon 尺寸預覽</div>
+          <button class="btn btn--sm btn--primary" id="btn-download-zip" type="button">📦 一鍵打包下載全部 (ZIP)</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--space-md); margin-top: var(--space-md);" id="preview-cards">
+          <!-- 尺寸卡片動態渲染 -->
+        </div>
+
+        <!-- HTML 代碼產生區 -->
+        <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--color-border);">
+          <div class="tool-section__header">
+            <div class="tool-section__title" style="font-size: 1rem;">HTML &lt;head&gt; 引用代碼</div>
+            <button class="btn btn--sm btn--secondary" id="btn-copy-html-tags" type="button">複製 HTML 代碼</button>
+          </div>
+          <textarea class="form-textarea" id="output-html-tags" rows="6" readonly style="font-family: var(--font-mono, monospace); font-size: 0.8125rem; margin-top: var(--space-sm);"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/vendor/jszip.min.js"></script>
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

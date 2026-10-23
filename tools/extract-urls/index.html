@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Extract URLs (提取網址) — 從大篇幅文字或網頁代碼中快速擷取所有 HTTP/HTTPS 網址連結，支援去重、提取主網域與批次匯出。Qiyen Toolbox。">
+  <title>提取網址 (Extract URLs) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">提取網址</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">提取網址</span>
+            <span class="tool-header__title-en">Extract URLs</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">批量過濾並抓取文字中包含的所有 HTTP 與 HTTPS 超連結，支援自動去重與網域抽取。</p>
+      </header>
+
+      <!-- 設定選項 -->
+      <div class="tool-section">
+        <div class="tool-section__title">提取選項</div>
+        <div style="display: flex; gap: var(--space-lg); flex-wrap: wrap; align-items: center;">
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-unique" checked>
+            <span>排除重複網址 (Deduplicate)</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-domain-only">
+            <span>僅提取主網域名稱 (Domain only)</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-sort" checked>
+            <span>依字母排序</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 雙欄佈局 -->
+      <div class="tool-split">
+        <!-- 輸入文字 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">原始文字內容</div>
+            <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例</button>
+          </div>
+          <textarea class="form-textarea" id="input-raw" rows="12" placeholder="請在此貼上包含網址的任意文字或文章內容…"></textarea>
+          <div style="display: flex; justify-content: flex-end; margin-top: var(--space-xs);">
+            <button class="btn btn--sm btn--ghost" id="btn-clear" type="button">清空</button>
+          </div>
+        </div>
+
+        <!-- 提取結果 -->
+        <div class="tool-section" style="margin-bottom: 0; display: flex; flex-direction: column;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">提取結果</div>
+            <span id="stats-badge" style="font-size: 0.8125rem; color: var(--color-accent); font-weight: 700;">共 0 個網址</span>
+          </div>
+          <textarea class="form-textarea" id="output-urls" rows="12" readonly style="flex: 1; font-family: var(--font-mono, monospace); font-size: 0.8125rem;" placeholder="提取出的網址將顯示於此…"></textarea>
+          <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+            <button class="btn btn--sm btn--secondary" id="btn-copy" type="button">一鍵複製</button>
+            <button class="btn btn--sm btn--ghost" id="btn-download" type="button">下載 .txt</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

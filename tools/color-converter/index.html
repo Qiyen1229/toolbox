@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Color Converter — HEX、RGB、HSL 顏色互轉，含顏色選擇器即時預覽。Qiyen Toolbox 線上工具。">
+  <title>顏色轉換器 (Color Converter) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+  <style>
+    .color-preview {
+      width: 100%;
+      height: 120px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      margin-bottom: var(--space-lg);
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .color-preview__label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      /* NOTE: 根據背景自動調整文字顏色，由 JS 處理 */
+    }
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .color-picker-wrapper input[type="color"] {
+      width: 60px;
+      height: 44px;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      background: none;
+      padding: 2px;
+    }
+    .color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    .color-picker-wrapper input[type="color"]::-webkit-color-swatch {
+      border: none;
+      border-radius: calc(var(--radius-md) - 4px);
+    }
+    .color-values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-md);
+    }
+    .color-value-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+    .color-value-card__label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-sm);
+    }
+    .color-value-card__row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .color-value-card__input {
+      flex: 1;
+      padding: 8px 12px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-primary);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.875rem;
+    }
+    .color-value-card__input:focus {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-light);
+    }
+    .copy-sm-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .copy-sm-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">顏色轉換器</span>
+      </div>
+
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="13.5" cy="6.5" r="2"/><circle cx="17.5" cy="10.5" r="2"/><circle cx="8.5" cy="7.5" r="2"/><circle cx="6.5" cy="12.5" r="2"/>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">顏色轉換器</span>
+            <span class="tool-header__title-en">Color Converter</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">HEX、RGB、HSL 顏色互轉，輸入任一格式即時轉換。支援顏色選擇器。</p>
+      </header>
+
+      <!-- 顏色預覽 -->
+      <div class="color-preview" id="color-preview" style="background-color: #3b82f6;">
+        <span class="color-preview__label" id="color-label" style="background: rgba(0,0,0,0.4); color: #fff;">#3B82F6</span>
+      </div>
+
+      <!-- 顏色選擇器 -->
+      <div class="color-picker-wrapper">
+        <input type="color" id="color-picker" value="#3b82f6" aria-label="選擇顏色">
+        <span style="font-size: 0.875rem; color: var(--color-text-secondary);">使用顏色選擇器或在下方直接輸入數值</span>
+      </div>
+
+      <!-- 色值輸入區 -->
+      <div class="tool-section">
+        <div class="tool-section__title">色值</div>
+        <div class="color-values-grid">
+          <!-- HEX -->
+          <div class="color-value-card">
+            <div class="color-value-card__label">HEX</div>
+            <div class="color-value-card__row">
+              <input type="text" class="color-value-card__input" id="input-hex" value="#3B82F6" placeholder="#000000" maxlength="7">
+              <button class="copy-sm-btn" data-copy="input-hex" title="複製">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- RGB -->
+          <div class="color-value-card">
+            <div class="color-value-card__label">RGB</div>
+            <div class="color-value-card__row">
+              <input type="text" class="color-value-card__input" id="input-rgb" value="rgb(59, 130, 246)" placeholder="rgb(0, 0, 0)">
+              <button class="copy-sm-btn" data-copy="input-rgb" title="複製">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- HSL -->
+          <div class="color-value-card">
+            <div class="color-value-card__label">HSL</div>
+            <div class="color-value-card__row">
+              <input type="text" class="color-value-card__input" id="input-hsl" value="hsl(217, 91%, 60%)" placeholder="hsl(0, 0%, 0%)">
+              <button class="copy-sm-btn" data-copy="input-hsl" title="複製">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

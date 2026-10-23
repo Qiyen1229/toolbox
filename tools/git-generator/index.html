@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Git Command Generator — 互動式 Git 常用指令產生器，支援分支管理、提交復原、暫存與遠端同步指令生成。Qiyen Toolbox。">
+  <title>Git 指令產生器 (Git Command Generator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Git 指令產生器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="6" y1="3" x2="6" y2="15"/>
+              <circle cx="18" cy="6" r="3"/>
+              <circle cx="6" cy="18" r="3"/>
+              <path d="M18 9a9 9 0 0 1-9 9"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">Git 指令產生器</span>
+            <span class="tool-header__title-en">Git Command Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">依情境互動式選擇 Git 操作需求，即時生成正確指令與參數，避免誤操作風險。</p>
+      </header>
+
+      <!-- 情境類別頁籤 -->
+      <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-bottom: var(--space-md);" id="git-tabs">
+        <button class="btn btn--sm btn--primary git-tab" data-cat="branch">🌿 分支管理</button>
+        <button class="btn btn--sm btn--ghost git-tab" data-cat="commit">📝 暫存與提交</button>
+        <button class="btn btn--sm btn--ghost git-tab" data-cat="undo">⏪ 復原與撤銷</button>
+        <button class="btn btn--sm btn--ghost git-tab" data-cat="remote">🌐 遠端同步</button>
+        <button class="btn btn--sm btn--ghost git-tab" data-cat="stash">📦 Stash 暫存</button>
+        <button class="btn btn--sm btn--ghost git-tab" data-cat="log">📜 紀錄與 Log</button>
+      </div>
+
+      <!-- 互動參數設定區 -->
+      <div class="tool-section">
+        <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <div>
+            <label style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 6px;">選擇具體操作情境：</label>
+            <select class="form-select" id="action-select" style="width: 100%; max-width: 480px;"></select>
+          </div>
+
+          <!-- 動態輸入欄位容器 -->
+          <div id="dynamic-fields" style="display: flex; gap: var(--space-sm); flex-wrap: wrap;"></div>
+        </div>
+      </div>
+
+      <!-- 指令輸出展示終端風格卡片 -->
+      <div class="tool-section" style="margin-top: var(--space-lg); background: #0b1120; color: #f8fafc; border: 1px solid rgba(59, 130, 246, 0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span>
+            <span style="margin-left: 8px; font-size: 0.75rem; font-family: var(--font-mono, monospace); color: #94a3b8;">Terminal Command</span>
+          </div>
+          <button class="btn btn--sm btn--primary" id="btn-copy-command" style="font-weight: 700;">複製指令 📋</button>
+        </div>
+
+        <pre id="command-output" style="
+          font-family: var(--font-mono, monospace);
+          font-size: 1.05rem;
+          color: #22d3ee;
+          padding: var(--space-md);
+          background: rgba(15, 23, 42, 0.7);
+          border-radius: var(--radius-sm);
+          overflow-x: auto;
+          line-height: 1.6;
+        "></pre>
+
+        <!-- 說明與安全注意事項 -->
+        <div id="command-explain" style="margin-top: var(--space-md); font-size: 0.8125rem; color: #cbd5e1; line-height: 1.6; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: var(--space-sm);"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lorem Ipsum Generator — 支援經典拉丁假文與繁體中文排版假文產生器，可自訂段落數、句子數與 HTML 標籤。Qiyen Toolbox 線上工具。">
+  <title>假字產生器 (Lorem Ipsum Generator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">假字產生器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="17" y1="10" x2="3" y2="10"/>
+              <line x1="21" y1="6" x2="3" y2="6"/>
+              <line x1="21" y1="14" x2="3" y2="14"/>
+              <line x1="17" y1="18" x2="3" y2="18"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">假字產生器</span>
+            <span class="tool-header__title-en">Lorem Ipsum Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">假文排版產生器，支援經典拉丁文 (Lorem Ipsum) 與繁體中文排版預覽文字。</p>
+      </header>
+
+      <!-- 設定選項區 -->
+      <div class="tool-section">
+        <div class="tool-section__title">產生設定</div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md);">
+          <!-- 語言種類 -->
+          <div class="form-group">
+            <label class="form-label" for="lorem-type">語言種類：</label>
+            <select class="form-select" id="lorem-type">
+              <option value="latin" selected>拉丁文 (Lorem Ipsum)</option>
+              <option value="zh">繁體中文 (排版假文)</option>
+            </select>
+          </div>
+
+          <!-- 段落數 -->
+          <div class="form-group">
+            <label class="form-label" for="lorem-paragraphs">段落數量：<span id="label-paragraphs">3</span> 段</label>
+            <input type="range" class="form-range" id="lorem-paragraphs" min="1" max="15" value="3">
+          </div>
+
+          <!-- 每段句子數 -->
+          <div class="form-group">
+            <label class="form-label" for="lorem-sentences">每段句數：<span id="label-sentences">5</span> 句</label>
+            <input type="range" class="form-range" id="lorem-sentences" min="2" max="10" value="5">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: var(--space-lg); margin-top: var(--space-sm); flex-wrap: wrap;">
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-html-p">
+            <span>包含 &lt;p&gt; HTML 標籤</span>
+          </label>
+          <label class="form-checkbox" id="wrapper-start-lorem">
+            <input type="checkbox" id="opt-start-lorem" checked>
+            <span>以 "Lorem ipsum..." 開頭</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 操作按鈕 -->
+      <div class="tool-actions">
+        <button class="btn btn--primary" id="btn-generate" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          產生假文 (Generate)
+        </button>
+        <button class="btn btn--secondary" id="btn-copy" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          複製全文
+        </button>
+        <button class="btn btn--ghost" id="btn-download" type="button">
+          下載為 .txt
+        </button>
+        <button class="btn btn--ghost" id="btn-clear" type="button">
+          清空
+        </button>
+      </div>
+
+      <!-- 結果區 -->
+      <div class="tool-result" id="result-section">
+        <div class="tool-result__header">
+          <span class="tool-result__label">假文預覽</span>
+          <span style="font-size: 0.8125rem; color: var(--color-text-tertiary);" id="result-stats">
+            統計：0 段 · 0 字元
+          </span>
+        </div>
+        <div id="lorem-output" style="
+          padding: var(--space-md);
+          background: var(--color-surface);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          line-height: 1.8;
+          font-size: 0.9375rem;
+          color: var(--color-text-primary);
+          white-space: pre-wrap;
+          max-height: 480px;
+          overflow-y: auto;
+          user-select: all;
+        "></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

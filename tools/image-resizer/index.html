@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Image Resizer — 本地圖片尺寸調整工具，支援等比例鎖定、快速預設尺寸與高畫質縮放，純瀏覽器運算不上傳。Qiyen Toolbox。">
+  <title>Image Resizer — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Image Resizer</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6"/>
+              <path d="M9 21H3v-6"/>
+              <line x1="21" y1="3" x2="14" y2="10"/>
+              <line x1="3" y1="21" x2="10" y2="14"/>
+            </svg>
+          </div>
+          Image Resizer
+        </h1>
+        <p class="tool-header__description">修改圖片寬度與高度，支援鎖定長寬比與常用社群/螢幕預設解析度。</p>
+      </header>
+
+      <!-- 上傳區 -->
+      <div class="tool-section" id="upload-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept="image/*" style="display: none;">
+          <div class="file-drop-zone__icon">📐</div>
+          <div class="file-drop-zone__text">點擊選擇圖片，或直接拖曳圖片至此處</div>
+          <div class="file-drop-zone__hint">支援 JPG、PNG、WEBP 等格式</div>
+        </div>
+      </div>
+
+      <!-- 尺寸調整面板 -->
+      <div class="tool-section" id="resize-options" style="display: none;">
+        <div class="tool-section__title">調整解析度</div>
+
+        <!-- 快速預設標籤 -->
+        <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-bottom: var(--space-md);">
+          <button class="btn btn--sm btn--secondary btn-preset" data-scale="1">100% 原始</button>
+          <button class="btn btn--sm btn--secondary btn-preset" data-scale="0.75">75%</button>
+          <button class="btn btn--sm btn--secondary btn-preset" data-scale="0.5">50%</button>
+          <button class="btn btn--sm btn--secondary btn-preset" data-scale="0.25">25%</button>
+          <button class="btn btn--sm btn--secondary btn-preset-fixed" data-w="1920" data-h="1080">1920×1080</button>
+          <button class="btn btn--sm btn--secondary btn-preset-fixed" data-w="1280" data-h="720">1280×720</button>
+          <button class="btn btn--sm btn--secondary btn-preset-fixed" data-w="1080" data-h="1080">1080×1080</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); align-items: center;">
+          <!-- 寬度 -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="input-width">寬度 (Width, px)：</label>
+            <input type="number" class="form-input" id="input-width" min="1" max="10000">
+          </div>
+
+          <!-- 高度 -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="input-height">高度 (Height, px)：</label>
+            <input type="number" class="form-input" id="input-height" min="1" max="10000">
+          </div>
+
+          <!-- 鎖定長寬比 -->
+          <div style="padding-top: var(--space-lg);">
+            <label class="form-checkbox">
+              <input type="checkbox" id="opt-lock-aspect" checked>
+              <span>鎖定長寬比例 (Lock Aspect Ratio)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 預覽與下載 -->
+      <div class="tool-section" id="preview-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title">調整後預覽</div>
+          <div id="dim-badge" style="font-size: 0.875rem; color: var(--color-text-secondary); font-weight: 600;">--</div>
+        </div>
+
+        <div style="display: flex; justify-content: center; align-items: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-lg); min-height: 260px; overflow: hidden;">
+          <canvas id="resize-canvas" style="max-width: 100%; max-height: 400px; object-fit: contain; box-shadow: var(--shadow-sm);"></canvas>
+        </div>
+
+        <div class="tool-actions" style="margin-top: var(--space-xl);">
+          <button class="btn btn--primary" id="btn-download" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            下載調整後的圖片
+          </button>
+          <button class="btn btn--secondary" id="btn-reupload" type="button">
+            更換其他圖片
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="JS Formatter — 本地 JavaScript 程式碼美化與壓縮工具，支援語法排版、自訂縮排、清除多餘空白與單行壓縮。Qiyen Toolbox。">
+  <title>JS 格式化器 (JS Formatter) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">JS 格式化器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3h18v18H3z"/>
+              <path d="M16 8v8c0 1.5-1 2-2.5 2M9 13c.5 1 1.5 1.5 2.5 1s1-1.5 0-2.5l-1-1c-1-1-.5-2.5 1-2.5s2 1 2 2"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">JS 格式化器</span>
+            <span class="tool-header__title-en">JS Formatter</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">純瀏覽器本地格式化 JavaScript 代碼，自動對齊括號與語句縮排，或一鍵壓縮成單行代碼。</p>
+      </header>
+
+      <!-- 操作工具列 -->
+      <div class="tool-actions">
+        <button class="btn btn--primary" id="btn-format">✨ 格式化 JS</button>
+        <button class="btn btn--secondary" id="btn-minify">單行壓縮</button>
+        <button class="btn btn--secondary" id="btn-demo">載入範例</button>
+        <button class="btn btn--ghost" id="btn-clear">清除</button>
+        <div style="flex:1;"></div>
+        <select class="form-select" id="indent-select" style="width: 130px; font-size: 0.8125rem;">
+          <option value="2" selected>2 空格縮排</option>
+          <option value="4">4 空格縮排</option>
+        </select>
+        <button class="btn btn--secondary" id="btn-copy">複製結果</button>
+      </div>
+
+      <!-- 雙欄編輯與輸出 -->
+      <div class="tool-split" style="margin-top: var(--space-md);">
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title">原始 JavaScript</span>
+          </div>
+          <div class="tool-panel__body">
+            <textarea class="form-input" id="js-input" rows="16" placeholder="請在此貼上 JavaScript 代碼..." style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.875rem;"></textarea>
+          </div>
+        </div>
+
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title">處理結果</span>
+          </div>
+          <div class="tool-panel__body">
+            <pre id="js-output" style="
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: var(--radius-sm);
+              padding: var(--space-md);
+              min-height: 380px;
+              max-height: 480px;
+              overflow: auto;
+              font-family: var(--font-mono, monospace);
+              font-size: 0.875rem;
+              white-space: pre-wrap;
+              color: var(--color-text-primary);
+            "></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

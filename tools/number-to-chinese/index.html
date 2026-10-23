@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="數字轉中文大寫 — 快速將阿拉伯數字轉換為銀行支票防偽大寫金額（壹、貳、參、肆）與中文日常讀法。Qiyen Toolbox。">
+  <title>數字轉中文大寫 (Number to Chinese) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">數字轉中文大寫</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7V4h16v3"/>
+              <path d="M9 20h6"/>
+              <path d="M12 4v16"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">數字轉中文大寫</span>
+            <span class="tool-header__title-en">Number to Chinese</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">將阿拉伯數字轉為商業發票與銀行支票防偽大寫金額（壹貳參肆），以及中文日常口語讀法。</p>
+      </header>
+
+      <!-- 輸入區塊 -->
+      <div class="tool-section">
+        <div class="form-group">
+          <label class="form-label" for="num-input">請輸入阿拉伯數字（支援小數點）：</label>
+          <input type="text" class="form-input" id="num-input" placeholder="例如：1234567.89" style="font-size: 1.25rem; font-family: var(--font-mono, monospace);">
+        </div>
+
+        <!-- 快速金額按鈕 -->
+        <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-sm);">
+          <span style="font-size: 0.8125rem; color: var(--color-text-tertiary); align-self: center;">常用範例：</span>
+          <button class="btn btn--sm btn--ghost btn-preset" data-val="10000">1萬</button>
+          <button class="btn btn--sm btn--ghost btn-preset" data-val="52000">5萬2</button>
+          <button class="btn btn--sm btn--ghost btn-preset" data-val="100000">10萬</button>
+          <button class="btn btn--sm btn--ghost btn-preset" data-val="1285000">128.5萬</button>
+          <button class="btn btn--sm btn--ghost btn-preset" data-val="10000000">1,000萬</button>
+        </div>
+      </div>
+
+      <!-- 轉換結果卡片組 -->
+      <div class="tool-section" id="result-section">
+        <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+          <!-- 1. 商業與銀行支票大寫 -->
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 700; color: var(--color-accent);">銀行支票 / 商業發票防偽大寫</span>
+              <button class="btn btn--sm btn--secondary" id="btn-copy-formal">複製</button>
+            </div>
+            <div id="output-formal" style="font-size: 1.125rem; font-weight: 700; line-height: 1.6; word-break: break-all; color: var(--color-text-primary);">
+              零元整
+            </div>
+          </div>
+
+          <!-- 2. 中文日常口語讀法 -->
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 700; color: var(--color-text-secondary);">中文日常讀法</span>
+              <button class="btn btn--sm btn--secondary" id="btn-copy-common">複製</button>
+            </div>
+            <div id="output-common" style="font-size: 1.125rem; font-weight: 600; line-height: 1.6; word-break: break-all;">
+              零
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

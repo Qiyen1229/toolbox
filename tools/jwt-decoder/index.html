@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="JWT Decoder — 本地 JSON Web Token 解碼工具，即時拆解 Header、Payload 與 Signature，支援過期時間檢驗，純前端安全運算不上傳。">
+  <title>JWT 解碼器 (JWT Decoder) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">JWT 解碼器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">JWT 解碼器</span>
+            <span class="tool-header__title-en">JWT Decoder</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">純瀏覽器本地解碼 JSON Web Token，拆解標頭、載荷與簽名，並智能驗證過期時間。</p>
+      </header>
+
+      <!-- Token 輸入區 -->
+      <div class="tool-section">
+        <div class="tool-section__header">
+          <div class="tool-section__title">編碼後的 JWT 字串 (Encoded Token)</div>
+          <div style="display: flex; gap: var(--space-xs);">
+            <button class="btn btn--sm btn--ghost" id="btn-demo" type="button">載入範例</button>
+            <button class="btn btn--sm btn--ghost" id="btn-clear" type="button">清除</button>
+          </div>
+        </div>
+        <textarea class="form-input" id="jwt-input" rows="4" placeholder="請在此貼上 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.875rem; word-break: break-all;"></textarea>
+      </div>
+
+      <!-- 解碼結果：雙欄呈現 Header & Payload -->
+      <div class="tool-split">
+        <!-- Header -->
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title" style="color: #ef4444;">標頭 (Header · Algorithm & Type)</span>
+            <button class="btn btn--sm btn--ghost" id="btn-copy-header">複製</button>
+          </div>
+          <div class="tool-panel__body">
+            <pre id="header-output" style="font-family: var(--font-mono, monospace); font-size: 0.875rem; white-space: pre-wrap; color: var(--color-text-primary);"></pre>
+          </div>
+        </div>
+
+        <!-- Payload -->
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title" style="color: #8b5cf6;">載荷資料 (Payload · Claims)</span>
+            <button class="btn btn--sm btn--ghost" id="btn-copy-payload">複製</button>
+          </div>
+          <div class="tool-panel__body">
+            <div id="payload-meta" style="margin-bottom: var(--space-sm); font-size: 0.8125rem;"></div>
+            <pre id="payload-output" style="font-family: var(--font-mono, monospace); font-size: 0.875rem; white-space: pre-wrap; color: var(--color-text-primary);"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signature -->
+      <div class="tool-section" style="margin-top: var(--space-lg);">
+        <div class="tool-section__title" style="color: #10b981;">簽名狀態 (Signature)</div>
+        <div id="sig-output" style="font-family: var(--font-mono, monospace); font-size: 0.875rem; color: var(--color-text-secondary); word-break: break-all; margin-top: var(--space-xs);"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="加權成績計算器 — 平時作業、期中考、期末考自訂百分比權重，精確換算學期總成績與及格評估。Qiyen Toolbox。">
+  <title>加權成績計算器 (Weighted Grade) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">加權成績計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">加權成績計算器</span>
+            <span class="tool-header__title-en">Weighted Grade Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">平時出席、作業、期中與期末報告加權評分試算，自動檢核權重百分比與及格狀態。</p>
+      </header>
+
+      <!-- 項目設定區塊 -->
+      <div class="tool-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.875rem;">目前總權重：</span>
+            <strong id="total-weight-display" style="color: var(--color-success); font-size: 1.125rem;">100%</strong>
+          </div>
+          <button class="btn btn--sm btn--primary" id="btn-add-item">+ 新增評分項目</button>
+        </div>
+
+        <!-- 評分項目清單 -->
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-border); color: var(--color-text-secondary);">
+                <th style="padding: 8px;">評分項目名稱</th>
+                <th style="padding: 8px; width: 120px;">得分 (0~100)</th>
+                <th style="padding: 8px; width: 120px;">權重比重 (%)</th>
+                <th style="padding: 8px; width: 60px; text-align: center;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="grade-rows">
+              <!-- 動態生成項目 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 計算結果卡片 -->
+      <div class="tool-section">
+        <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%); border: 2px solid var(--color-success); border-radius: var(--radius-lg); padding: var(--space-lg);">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary); text-transform: uppercase;">最終加權總分</span>
+              <div id="final-score" style="font-size: 3rem; font-weight: 900; color: var(--color-success); line-height: 1.1;">
+                85.0 分
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary);">及格評定</span>
+              <div id="pass-status" style="font-size: 1.5rem; font-weight: 800; color: var(--color-success);">
+                ✓ 及格通過
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Open Graph Preview — 預覽網頁分享至 LINE、Discord、Facebook、Twitter 等社群軟體時的卡片樣式，並提供一鍵產生標準 OG Meta 標籤。">
+  <title>Open Graph Preview (社群分享卡片預覽) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Open Graph 預覽器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">Open Graph 預覽器</span>
+            <span class="tool-header__title-en">Open Graph Preview</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">模擬網站在 LINE、Discord、Facebook 與 Twitter (X) 等社群平台被分享時的卡片外觀與產生標準代碼。</p>
+      </header>
+
+      <!-- 左右分割 -->
+      <div class="tool-split">
+        <!-- 左側：輸入資料 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">網頁中繼資料 (Metadata)</div>
+            <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例</button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-md); margin-top: var(--space-md);">
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="og-title">網頁標題 (og:title)：</label>
+              <input type="text" class="form-input" id="og-title" placeholder="例如：Qiyen Toolbox — 實用線上工具箱">
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="og-desc">內容說明 (og:description)：</label>
+              <textarea class="form-textarea" id="og-desc" rows="3" placeholder="例如：純前端執行的實用工具箱，無廣告、免登入、隱私有保障。"></textarea>
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="og-img">預覽圖片網址 (og:image)：</label>
+              <input type="text" class="form-input" id="og-img" placeholder="https://example.com/cover.jpg">
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="og-site">網站名稱 (og:site_name)：</label>
+              <input type="text" class="form-input" id="og-site" placeholder="Qiyen Toolbox">
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="og-url">頁面網址 (og:url)：</label>
+              <input type="text" class="form-input" id="og-url" placeholder="https://toolbox.qiyen.dev/">
+            </div>
+          </div>
+        </div>
+
+        <!-- 右側：社群平台模擬 -->
+        <div class="tool-section" style="margin-bottom: 0; display: flex; flex-direction: column;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">各平台分享模擬</div>
+          </div>
+
+          <!-- 平台切換按鈕 -->
+          <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-bottom: var(--space-md);">
+            <button class="btn btn--sm btn--primary btn-plat" data-plat="line">💬 LINE</button>
+            <button class="btn btn--sm btn--secondary btn-plat" data-plat="discord">👾 Discord</button>
+            <button class="btn btn--sm btn--secondary btn-plat" data-plat="facebook">📘 Facebook</button>
+            <button class="btn btn--sm btn--secondary btn-plat" data-plat="twitter">🐦 Twitter / X</button>
+          </div>
+
+          <!-- 模擬卡片預覽區 -->
+          <div id="mock-container" style="flex: 1; display: flex; align-items: center; justify-content: center; background: var(--color-bg); padding: var(--space-lg); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <!-- 動態渲染對應社群平台的卡片 HTML -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 下方：產生的 HTML Meta 標籤代碼 -->
+      <div class="tool-section" style="margin-top: var(--space-xl);">
+        <div class="tool-section__header">
+          <div class="tool-section__title">生成的 Open Graph HTML 標籤</div>
+          <button class="btn btn--sm btn--secondary" id="btn-copy-tags" type="button">複製 Meta 標籤</button>
+        </div>
+        <textarea class="form-textarea" id="output-meta" rows="7" readonly style="font-family: var(--font-mono, monospace); font-size: 0.8125rem; margin-top: var(--space-sm);"></textarea>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

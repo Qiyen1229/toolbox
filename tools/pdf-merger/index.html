@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PDF 合併器 — 多個 PDF 文件合併合成一個，支援自訂排序、即時頁數預覽與一鍵極速匯出。Qiyen Toolbox 純本地運算。">
+  <title>PDF 合併器 (PDF Merger) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">PDF 合併器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M12 18v-6"/>
+              <path d="m9 15 3 3 3-3"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">PDF 合併器</span>
+            <span class="tool-header__title-en">PDF Merger</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">將多份 PDF 文件按自訂順序組合成單一完整 PDF，純瀏覽器本地極速處理，保密無外洩風險。</p>
+      </header>
+
+      <!-- 拖曳上傳 -->
+      <div class="tool-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" multiple accept="application/pdf" style="display: none;">
+          <div class="file-drop-zone__icon">📑</div>
+          <div class="file-drop-zone__text">點擊選擇多個 PDF 檔案，或拖曳至此處</div>
+          <div class="file-drop-zone__hint">支援選取 2 份以上 PDF 檔案進行合併</div>
+        </div>
+      </div>
+
+      <!-- 檔案排序清單區塊 -->
+      <div class="tool-section" id="merge-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title" id="merge-title">已加入 PDF (0 份 · 0 頁)</div>
+          <div style="display: flex; gap: var(--space-xs);">
+            <button class="btn btn--sm btn--secondary" id="btn-add-more" type="button">+ 增加更多 PDF</button>
+            <button class="btn btn--sm btn--ghost" id="btn-clear-all" type="button">清空全部</button>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto; margin-top: var(--space-md); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+            <thead>
+              <tr style="background: var(--color-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 10px 14px; width: 60px;">順序</th>
+                <th style="padding: 10px 14px;">檔案名稱</th>
+                <th style="padding: 10px 14px; width: 100px;">大小</th>
+                <th style="padding: 10px 14px; width: 90px;">頁數</th>
+                <th style="padding: 10px 14px; width: 160px; text-align: center;">調整順序 / 操作</th>
+              </tr>
+            </thead>
+            <tbody id="pdf-tbody">
+              <!-- 動態渲染 -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 輸出檔名設定與合併按鈕 -->
+        <div style="margin-top: var(--space-lg); display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+          <label class="form-label" for="out-filename" style="margin: 0; white-space: nowrap;">輸出 PDF 檔名：</label>
+          <input type="text" class="form-input" id="out-filename" value="merged-document.pdf" style="max-width: 320px;">
+        </div>
+
+        <div class="tool-actions" style="margin-top: var(--space-xl);">
+          <button class="btn btn--primary btn--lg" id="btn-do-merge" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            立即合併並下載新 PDF
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/vendor/pdf-lib.min.js"></script>
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

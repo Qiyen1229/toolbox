@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="折扣計算器 — 快速試算台灣幾折、% off、現折優惠券與折後實付金額、節省總額。Qiyen Toolbox。">
+  <title>折扣計算器 (Discount Calculator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">折扣計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">折扣與特價計算器</span>
+            <span class="tool-header__title-en">Discount Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">支援台灣「幾折」、歐美「% OFF」以及滿額折抵、折價券疊加，快速計算省下多少錢。</p>
+      </header>
+
+      <!-- 輸入區塊 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+          
+          <div class="form-group">
+            <label class="form-label" for="orig-price">商品原價 (NT$)：</label>
+            <input type="number" class="form-input" id="orig-price" value="2500" min="0" step="1" style="font-size: 1.125rem; font-weight: 700;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="discount-type">折扣模式：</label>
+            <select class="form-input" id="discount-type">
+              <option value="tw">台灣折數（如 85 折、7 折）</option>
+              <option value="off">% OFF（如 20% off）</option>
+              <option value="minus">直接減免（如 現折 300）</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="discount-val-label" for="discount-val">折扣數值：</label>
+            <input type="number" class="form-input" id="discount-val" value="8" min="0" step="0.1">
+            <!-- 快速折數按鈕 -->
+            <div id="tw-quick-tags" style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+              <button class="btn btn--xs btn--ghost btn-tag" data-val="9">9折</button>
+              <button class="btn btn--xs btn--ghost btn-tag" data-val="8.5">85折</button>
+              <button class="btn btn--xs btn--ghost btn-tag" data-val="8">8折</button>
+              <button class="btn btn--xs btn--ghost btn-tag" data-val="7.5">75折</button>
+              <button class="btn btn--xs btn--ghost btn-tag" data-val="7">7折</button>
+              <button class="btn btn--xs btn--ghost btn-tag" data-val="5">5折(半價)</button>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 style="font-size: 0.9375rem; font-weight: 700; margin: var(--space-lg) 0 var(--space-sm); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+          疊加優惠（選填）
+        </h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label" for="extra-coupon">額外折價券 / 紅利點數折抵 (NT$)：</label>
+            <input type="number" class="form-input" id="extra-coupon" value="100" min="0" step="10">
+          </div>
+        </div>
+      </div>
+
+      <!-- 結果卡片 -->
+      <div class="tool-section">
+        <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%); border: 2px solid var(--color-success); border-radius: var(--radius-lg); padding: var(--space-lg);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+              <span style="font-size: 0.875rem; color: var(--color-text-secondary); text-transform: uppercase;">折扣後實付金額 (Final Price)</span>
+              <div id="final-price" style="font-size: 2.5rem; font-weight: 800; color: var(--color-success); line-height: 1.2;">
+                NT$ 1,900
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.875rem; color: var(--color-text-secondary);">共節省了</span>
+              <div id="total-saved" style="font-size: 1.5rem; font-weight: 700; color: var(--color-danger);">
+                NT$ 600 (-24%)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

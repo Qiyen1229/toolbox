@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="圖片轉 PDF — 多張圖片一鍵合併合成單一 PDF 文件，支援排序、A4 直向/橫向版面與邊距設定。Qiyen Toolbox 純本地工具。">
+  <title>圖片轉 PDF (Image to PDF) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">圖片轉 PDF</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <circle cx="10" cy="12" r="2"/>
+              <path d="m20 17-3-3-4 4"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">圖片轉 PDF</span>
+            <span class="tool-header__title-en">Image to PDF</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">將單張或多張 JPG、PNG、WEBP 圖片合成高品質 PDF 文件，支援拖曳調整順序與頁面邊距。</p>
+      </header>
+
+      <!-- 拖曳上傳 -->
+      <div class="tool-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+          <div class="file-drop-zone__icon">🖼️</div>
+          <div class="file-drop-zone__text">點擊選擇圖片，或將多張圖片拖曳至此處</div>
+          <div class="file-drop-zone__hint">支援 JPG、PNG、WEBP 格式（100% 瀏覽器本機合成，隱私不外洩）</div>
+        </div>
+      </div>
+
+      <!-- 版面設定面板 -->
+      <div class="tool-section" id="options-section" style="display: none;">
+        <div class="tool-section__title">PDF 頁面格式設定</div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label" for="page-size">頁面尺寸：</label>
+            <select class="form-select" id="page-size">
+              <option value="a4-portrait" selected>A4 直向 (210 × 297 mm)</option>
+              <option value="a4-landscape">A4 橫向 (297 × 210 mm)</option>
+              <option value="fit">依圖片原始大小自適應</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="page-margin">頁面邊距：</label>
+            <select class="form-select" id="page-margin">
+              <option value="none" selected>無邊距 (填滿滿版)</option>
+              <option value="small">窄邊距 (10 mm)</option>
+              <option value="normal">標準邊距 (20 mm)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pdf-filename">輸出 PDF 檔名：</label>
+            <input type="text" class="form-input" id="pdf-filename" value="images-merged.pdf">
+          </div>
+        </div>
+      </div>
+
+      <!-- 圖片排序清單 -->
+      <div class="tool-section" id="images-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title" id="img-count-title">已加入圖片 (0 張)</div>
+          <div style="display: flex; gap: var(--space-xs);">
+            <button class="btn btn--sm btn--secondary" id="btn-add-more" type="button">+ 繼續添加圖片</button>
+            <button class="btn btn--sm btn--ghost" id="btn-clear-images" type="button">清空全部</button>
+          </div>
+        </div>
+
+        <div id="images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-md); margin-top: var(--space-md);">
+          <!-- 動態渲染圖片卡片 -->
+        </div>
+
+        <!-- 匯出按鈕 -->
+        <div class="tool-actions" style="margin-top: var(--space-xl);">
+          <button class="btn btn--primary btn--lg" id="btn-generate-pdf" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            立即合成並下載 PDF
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/vendor/pdf-lib.min.js"></script>
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

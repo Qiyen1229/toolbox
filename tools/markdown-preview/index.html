@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Markdown Preview — 本地雙欄 Markdown 即時預覽工具，支援 GFM 語法、表格、程式碼高亮、HTML 複製與檔案下載。Qiyen Toolbox。">
+  <title>Markdown 即時預覽 (Markdown Preview) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Markdown 即時預覽</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2"/>
+              <polyline points="7 15 7 9 9.5 12 12 9 12 15"/>
+              <polyline points="15 12 17 14 19 12"/>
+              <line x1="17" y1="14" x2="17" y2="9"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">Markdown 即時預覽</span>
+            <span class="tool-header__title-en">Markdown Preview</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">純瀏覽器雙欄對照 Markdown 即時渲染，支援表格、代碼區塊，並可一鍵匯出 HTML。</p>
+      </header>
+
+      <!-- 操作工具列 -->
+      <div class="tool-actions">
+        <button class="btn btn--secondary" id="btn-demo">載入範例文件</button>
+        <button class="btn btn--ghost" id="btn-clear">清除內容</button>
+        <div style="flex:1;"></div>
+        <button class="btn btn--secondary" id="btn-copy-html">複製 HTML</button>
+        <button class="btn btn--primary" id="btn-download">下載 .md 檔</button>
+      </div>
+
+      <!-- 雙欄編輯與預覽區 -->
+      <div class="tool-split" style="margin-top: var(--space-md);">
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title">Markdown 輸入</span>
+          </div>
+          <div class="tool-panel__body">
+            <textarea class="form-input" id="md-input" rows="20" placeholder="在此輸入 Markdown 語法內容..." style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.875rem; line-height: 1.6;"></textarea>
+          </div>
+        </div>
+
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title">即時渲染預覽</span>
+          </div>
+          <div class="tool-panel__body">
+            <div id="md-preview" style="
+              background: var(--color-surface);
+              border: 1px solid var(--color-border);
+              border-radius: var(--radius-sm);
+              padding: var(--space-lg);
+              min-height: 480px;
+              max-height: 600px;
+              overflow-y: auto;
+              line-height: 1.7;
+              color: var(--color-text-primary);
+            "></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

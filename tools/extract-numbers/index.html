@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Extract Numbers (提取數字與統計) — 從文字中萃取所有數值，支援小數與千分位辨識，自動計算總和、平均值、最大最小值與中位數。Qiyen Toolbox。">
+  <title>提取數字與統計 (Extract Numbers) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">提取數字與統計</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="9" x2="20" y2="9"/>
+              <line x1="4" y1="15" x2="20" y2="15"/>
+              <line x1="10" y1="3" x2="8" y2="21"/>
+              <line x1="16" y1="3" x2="14" y2="21"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">提取數字與統計</span>
+            <span class="tool-header__title-en">Extract Numbers</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">從文章或雜亂報表中萃取所有純數字，自動過濾並即時統計總和、平均值、中位數與極值。</p>
+      </header>
+
+      <!-- 統計數據摘要卡片 -->
+      <div class="tool-section" id="stats-section" style="display: none;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--space-md);">
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">提取個數</div>
+            <div id="stat-count" style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent); margin-top: 4px;">0</div>
+          </div>
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">總和 (Sum)</div>
+            <div id="stat-sum" style="font-size: 1.25rem; font-weight: 700; margin-top: 4px;">0</div>
+          </div>
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">平均值 (Avg)</div>
+            <div id="stat-avg" style="font-size: 1.25rem; font-weight: 700; margin-top: 4px;">0</div>
+          </div>
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">最小值 (Min)</div>
+            <div id="stat-min" style="font-size: 1.25rem; font-weight: 700; margin-top: 4px;">0</div>
+          </div>
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">最大值 (Max)</div>
+            <div id="stat-max" style="font-size: 1.25rem; font-weight: 700; margin-top: 4px;">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 設定選項 -->
+      <div class="tool-section">
+        <div style="display: flex; gap: var(--space-lg); flex-wrap: wrap; align-items: center;">
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-decimals" checked>
+            <span>包含小數點 (Decimals)</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-negative" checked>
+            <span>包含負數 (Negatives)</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-unique">
+            <span>排除重複數值</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-sort">
+            <span>由小到大排序</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 雙欄佈局 -->
+      <div class="tool-split">
+        <!-- 輸入文字 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">原始文字內容</div>
+            <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例</button>
+          </div>
+          <textarea class="form-textarea" id="input-raw" rows="12" placeholder="請在此貼上包含任意數值的文字或報表…"></textarea>
+          <div style="display: flex; justify-content: flex-end; margin-top: var(--space-xs);">
+            <button class="btn btn--sm btn--ghost" id="btn-clear" type="button">清空</button>
+          </div>
+        </div>
+
+        <!-- 提取結果 -->
+        <div class="tool-section" style="margin-bottom: 0; display: flex; flex-direction: column;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">提取數值列表</div>
+            <button class="btn btn--sm btn--secondary" id="btn-copy" type="button">複製數值</button>
+          </div>
+          <textarea class="form-textarea" id="output-numbers" rows="12" readonly style="flex: 1; font-family: var(--font-mono, monospace); font-size: 0.875rem;" placeholder="萃取出的數字將依序排列於此…"></textarea>
+          <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+            <button class="btn btn--sm btn--ghost" id="btn-copy-stats" type="button">複製完整統計摘要</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

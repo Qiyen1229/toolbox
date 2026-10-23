@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SVG 預覽器 — 即時貼入或上傳 SVG 代碼預覽，支援縮放檢視、背景棋盤格切換、節點統計與高解析度 PNG 匯出。Qiyen Toolbox。">
+  <title>SVG 預覽器 (SVG Previewer) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">SVG 預覽器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">SVG 預覽器</span>
+            <span class="tool-header__title-en">SVG Previewer</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">貼入 SVG 原始碼或上傳檔案即時預覽，支援棋盤格切換、結構資訊檢視與高畫質 PNG 匯出。</p>
+      </header>
+
+      <!-- 左右分割佈局 -->
+      <div class="tool-split">
+        <!-- 左側：SVG 原始碼輸入 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">SVG 原始碼</div>
+            <div style="display: flex; gap: var(--space-xs);">
+              <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例</button>
+              <label class="btn btn--sm btn--secondary" style="margin: 0; cursor: pointer;">
+                上傳 .svg
+                <input type="file" id="file-svg" accept=".svg,image/svg+xml" style="display: none;">
+              </label>
+            </div>
+          </div>
+          <textarea class="form-textarea" id="svg-input" rows="14" placeholder="請在此貼上 <svg>...</svg> 原始碼…" style="font-family: var(--font-mono, monospace); font-size: 0.8125rem;"></textarea>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-sm);">
+            <span style="font-size: 0.8125rem; color: var(--color-text-tertiary);" id="svg-stats">大小：0 字元</span>
+            <button class="btn btn--sm btn--ghost" id="btn-clear" type="button">清空代碼</button>
+          </div>
+        </div>
+
+        <!-- 右側：即時預覽與匯出 -->
+        <div class="tool-section" style="margin-bottom: 0; display: flex; flex-direction: column;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">即時預覽</div>
+            <!-- 背景切換 -->
+            <div style="display: flex; gap: 4px;">
+              <button class="btn btn--sm btn--secondary btn-bg" data-bg="grid" title="棋盤格透明背景">🏁 棋盤</button>
+              <button class="btn btn--sm btn--secondary btn-bg" data-bg="white" title="白色背景">⚪ 白底</button>
+              <button class="btn btn--sm btn--secondary btn-bg" data-bg="dark" title="深色背景">⚫ 黑底</button>
+            </div>
+          </div>
+
+          <!-- 預覽容器 -->
+          <div id="preview-stage" style="
+            flex: 1;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            padding: var(--space-lg);
+            background-color: var(--color-bg);
+            background-image: linear-gradient(45deg, var(--color-surface) 25%, transparent 25%), linear-gradient(-45deg, var(--color-surface) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--color-surface) 75%), linear-gradient(-45deg, transparent 75%, var(--color-surface) 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+          ">
+            <div id="svg-container" style="max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;">
+              <span style="color: var(--color-text-tertiary); font-size: 0.875rem;">請在左側貼入 SVG 代碼…</span>
+            </div>
+          </div>
+
+          <!-- 匯出操作按鈕 -->
+          <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); flex-wrap: wrap;">
+            <button class="btn btn--primary btn--sm" id="btn-export-png" type="button">匯出為 PNG 圖片</button>
+            <button class="btn btn--secondary btn--sm" id="btn-download-svg" type="button">下載 .svg 檔</button>
+            <button class="btn btn--ghost btn--sm" id="btn-copy-code" type="button">複製 SVG 代碼</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

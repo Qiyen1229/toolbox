@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="小費計算器 — 國外旅遊出差餐廳必備，支援 10%、15%、18%、20% 快捷小費與多人平攤計算。Qiyen Toolbox。">
+  <title>小費計算器 (Tip Calculator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">小費計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <line x1="6" y1="12" x2="10" y2="12"></line>
+              <line x1="8" y1="10" x2="8" y2="14"></line>
+              <circle cx="16" cy="12" r="2"></circle>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">小費計算器</span>
+            <span class="tool-header__title-en">Tip Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">歐美旅遊或出差用餐必備，快速換算 15%、18%、20% 小費與每人分攤金額。</p>
+      </header>
+
+      <!-- 輸入區塊 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+          
+          <div class="form-group">
+            <label class="form-label" for="bill-amount">帳單金額 ($)：</label>
+            <input type="number" class="form-input" id="bill-amount" value="85.50" min="0" step="0.5" style="font-size: 1.125rem; font-weight: 700;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="split-count">人數：</label>
+            <input type="number" class="form-input" id="split-count" value="2" min="1" step="1">
+          </div>
+
+        </div>
+
+        <div class="form-group" style="margin-top: var(--space-md);">
+          <label class="form-label">小費比例 (%)：</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+            <button class="btn btn--secondary btn-tip" data-pct="10">10%</button>
+            <button class="btn btn--secondary btn-tip" data-pct="15">15%</button>
+            <button class="btn btn--primary btn-tip" data-pct="18">18%</button>
+            <button class="btn btn--secondary btn-tip" data-pct="20">20%</button>
+            <button class="btn btn--secondary btn-tip" data-pct="25">25%</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.875rem; color: var(--color-text-secondary);">自訂百分比：</span>
+            <input type="number" class="form-input" id="custom-tip" value="18" min="0" step="1" style="width: 100px;">
+            <span>%</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 計算結果卡片 -->
+      <div class="tool-section">
+        <div style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(168,85,247,0.08) 100%); border: 2px solid var(--color-accent); border-radius: var(--radius-lg); padding: var(--space-lg);">
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-md);">
+            <div>
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary); text-transform: uppercase;">總計金額 (Total Bill)</span>
+              <div id="total-with-tip" style="font-size: 2.25rem; font-weight: 800; color: var(--color-accent); line-height: 1.2;">
+                $ 100.89
+              </div>
+            </div>
+            <div>
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary); text-transform: uppercase;">每人應付 (Per Person)</span>
+              <div id="per-person-total" style="font-size: 2.25rem; font-weight: 800; color: var(--color-success); line-height: 1.2;">
+                $ 50.45
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: var(--space-xl); border-top: 1px dashed var(--color-border); padding-top: var(--space-md); font-size: 0.875rem;">
+            <div>
+              <span style="color: var(--color-text-secondary);">小費總額：</span>
+              <strong id="total-tip-val" style="color: var(--color-text-primary);">$ 15.39</strong>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">每人小費：</span>
+              <strong id="per-person-tip" style="color: var(--color-text-primary);">$ 7.70</strong>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

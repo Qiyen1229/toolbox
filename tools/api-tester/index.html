@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <script>if (!location.pathname.endsWith("/") && !location.pathname.endsWith(".html")) { location.replace(location.pathname + "/" + location.search + location.hash); }</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="API Tester — 本地 REST API 請求測試器，支援自訂 HTTP 方法、Headers、請求參數與 Body，即時響應分析與 JSON 檢視。Qiyen Toolbox。">
+  <title>API 測試器 (API Tester) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">API 測試器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">API 測試器</span>
+            <span class="tool-header__title-en">API Tester</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">純前端 REST API 請求測試工具，支援自訂 Headers、URL 查詢參數、Body 與響應 JSON 檢視。</p>
+      </header>
+
+      <!-- 請求控制列 -->
+      <div class="tool-section">
+        <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+          <select class="form-select" id="http-method"
+            style="width: 120px; font-weight: 700; font-family: var(--font-mono, monospace);">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="PATCH">PATCH</option>
+            <option value="DELETE">DELETE</option>
+            <option value="HEAD">HEAD</option>
+          </select>
+          <input type="url" class="form-input" id="api-url" placeholder="https://jsonplaceholder.typicode.com/todos/1"
+            style="flex: 1; min-width: 260px; font-family: var(--font-mono, monospace);">
+          <button class="btn btn--primary" id="btn-send" style="min-width: 120px; font-weight: 700;">
+            發送請求 ⚡
+          </button>
+        </div>
+
+        <!-- 頁籤：Headers / Params / Body -->
+        <div
+          style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs);">
+          <button class="btn btn--sm btn--secondary" id="tab-headers" type="button">Headers (<span
+              id="header-count">0</span>)</button>
+          <button class="btn btn--sm btn--ghost" id="tab-body" type="button">Request Body</button>
+          <button class="btn btn--sm btn--ghost" id="btn-load-demo" type="button"
+            style="margin-left: auto;">載入測試範例</button>
+        </div>
+
+        <!-- Headers 編輯區 -->
+        <div id="pane-headers" style="margin-top: var(--space-md);">
+          <div id="headers-list" style="display: flex; flex-direction: column; gap: var(--space-xs);"></div>
+          <button class="btn btn--sm btn--secondary" id="btn-add-header" type="button"
+            style="margin-top: var(--space-sm);">+ 新增 Header</button>
+        </div>
+
+        <!-- Body 編輯區 -->
+        <div id="pane-body" style="margin-top: var(--space-md); display: none;">
+          <textarea class="form-input" id="request-body" rows="5" placeholder='{"title": "test", "completed": false}'
+            style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.875rem;"></textarea>
+        </div>
+      </div>
+
+      <!-- 響應結果區 -->
+      <div class="tool-section" id="response-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title" style="display: flex; align-items: center; gap: var(--space-sm);">
+            <span>響應結果</span>
+            <span id="res-status"
+              style="padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; font-family: var(--font-mono, monospace);"></span>
+            <span id="res-time"
+              style="font-size: 0.75rem; color: var(--color-text-secondary); font-family: var(--font-mono, monospace);"></span>
+            <span id="res-size"
+              style="font-size: 0.75rem; color: var(--color-text-secondary); font-family: var(--font-mono, monospace);"></span>
+          </div>
+          <button class="btn btn--sm btn--secondary" id="btn-copy-response">複製響應</button>
+        </div>
+
+        <pre id="response-body" style="
+          background: var(--color-surface);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          padding: var(--space-md);
+          font-family: var(--font-mono, monospace);
+          font-size: 0.875rem;
+          max-height: 480px;
+          overflow: auto;
+          white-space: pre-wrap;
+          word-break: break-word;
+        "></pre>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

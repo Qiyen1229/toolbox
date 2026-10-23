@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cron Expression Generator — 線上 Cron 排程表達式視覺化產生器，支援自然語言白話解析與未來執行時間預覽。Qiyen Toolbox。">
+  <title>Cron 表達式產生器 (Cron Expression Generator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Cron 表達式產生器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+              <path d="M12 2v2M12 20v2M2 12h2M20 12h2"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">Cron 表達式產生器</span>
+            <span class="tool-header__title-en">Cron Expression Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">視覺化產生標準 5 欄 Cron 表達式，支援白話中文解讀與預覽未來排程執行時間。</p>
+      </header>
+
+      <!-- 快捷預設情境 -->
+      <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-bottom: var(--space-md);">
+        <span style="font-size: 0.8125rem; color: var(--color-text-tertiary); align-self: center; margin-right: 4px;">快捷排程：</span>
+        <button class="btn btn--sm btn--ghost cron-preset" data-cron="* * * * *">每分鐘</button>
+        <button class="btn btn--sm btn--ghost cron-preset" data-cron="*/5 * * * *">每 5 分鐘</button>
+        <button class="btn btn--sm btn--ghost cron-preset" data-cron="0 * * * *">每小時整點</button>
+        <button class="btn btn--sm btn--ghost cron-preset" data-cron="0 0 * * *">每天半夜 12 點</button>
+        <button class="btn btn--sm btn--ghost cron-preset" data-cron="0 9 * * 1-5">每個工作日上午 9 點</button>
+        <button class="btn btn--sm btn--ghost cron-preset" data-cron="0 0 1 * *">每月 1 號午夜</button>
+      </div>
+
+      <!-- Cron 表達式核心展示區 -->
+      <div class="tool-section" style="text-align: center; padding: var(--space-xl) var(--space-lg);">
+        <div style="display: flex; gap: var(--space-sm); justify-content: center; align-items: center; max-width: 600px; margin: 0 auto;">
+          <input type="text" class="form-input" id="cron-input" value="*/15 * * * *" style="font-family: var(--font-mono, monospace); font-size: 1.5rem; font-weight: 700; text-align: center; letter-spacing: 0.1em; color: var(--color-tech-cyan);">
+          <button class="btn btn--primary" id="btn-copy-cron" style="font-weight: 700;">複製 Cron</button>
+        </div>
+
+        <div id="cron-human" style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-primary); margin-top: var(--space-md);">
+          載入中...
+        </div>
+      </div>
+
+      <!-- 5 欄設定欄位 -->
+      <div class="tool-section">
+        <div class="tool-section__title" style="margin-bottom: var(--space-md);">欄位細項設定 (5 Fields)</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--space-md);">
+          <div>
+            <label style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">分鐘 (Minute 0-59)</label>
+            <input type="text" class="form-input cron-field" id="field-minute" value="*/15" style="font-family: var(--font-mono, monospace); text-align: center;">
+          </div>
+          <div>
+            <label style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">小時 (Hour 0-23)</label>
+            <input type="text" class="form-input cron-field" id="field-hour" value="*" style="font-family: var(--font-mono, monospace); text-align: center;">
+          </div>
+          <div>
+            <label style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">日期 (Day 1-31)</label>
+            <input type="text" class="form-input cron-field" id="field-day" value="*" style="font-family: var(--font-mono, monospace); text-align: center;">
+          </div>
+          <div>
+            <label style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">月份 (Month 1-12)</label>
+            <input type="text" class="form-input cron-field" id="field-month" value="*" style="font-family: var(--font-mono, monospace); text-align: center;">
+          </div>
+          <div>
+            <label style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">星期 (Weekday 0-6)</label>
+            <input type="text" class="form-input cron-field" id="field-weekday" value="*" style="font-family: var(--font-mono, monospace); text-align: center;">
+          </div>
+        </div>
+      </div>
+
+      <!-- 未來執行時間預覽 -->
+      <div class="tool-section">
+        <div class="tool-section__title">預估接下來 5 次執行時間預覽</div>
+        <div id="next-runs" style="margin-top: var(--space-sm); display: flex; flex-direction: column; gap: var(--space-xs); font-family: var(--font-mono, monospace); font-size: 0.875rem;"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IP / DNS Lookup — 線上 IP 檢測與 DNS 紀錄查詢工具，支援 DoH 查詢 A、AAAA、MX、TXT 紀錄與本機外網 IP 分析。Qiyen Toolbox。">
+  <title>IP / DNS 查詢工具 (IP & DNS Lookup) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">IP / DNS 查詢工具</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+              <path d="M2 12h20"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">IP / DNS 查詢工具</span>
+            <span class="tool-header__title-en">IP & DNS Lookup</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">即時檢測本機對外連線 IP 與網段，並支援透過 DNS-over-HTTPS (DoH) 查詢各網域 DNS 解析紀錄。</p>
+      </header>
+
+      <!-- 本機 IP 資訊卡片 -->
+      <div class="tool-section">
+        <div class="tool-section__header">
+          <div class="tool-section__title">🌐 本機對外 IP 資訊 (My Public IP)</div>
+          <button class="btn btn--sm btn--secondary" id="btn-refresh-ip">重新檢測</button>
+        </div>
+        <div style="display: flex; gap: var(--space-lg); flex-wrap: wrap; align-items: center; margin-top: var(--space-sm);">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">公共 IP 位址</div>
+            <div id="my-ip" style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-mono, monospace); color: var(--color-tech-cyan);">檢測中...</div>
+          </div>
+          <div style="border-left: 1px solid var(--color-border); padding-left: var(--space-md);">
+            <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">ISP 電信業者 / 國家地區</div>
+            <div id="my-isp" style="font-size: 1rem; font-weight: 600; color: var(--color-text-primary);">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DNS 紀錄查詢 -->
+      <div class="tool-section" style="margin-top: var(--space-lg);">
+        <div class="tool-section__title" style="margin-bottom: var(--space-sm);">🔍 網域 DNS 紀錄查詢 (DoH Cloudflare)</div>
+        <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+          <input type="text" class="form-input" id="domain-input" value="google.com" placeholder="請輸入網域名稱，例如 google.com" style="flex: 1; min-width: 220px; font-family: var(--font-mono, monospace);">
+          <select class="form-select" id="record-type" style="width: 110px; font-weight: 700;">
+            <option value="A">A (IPv4)</option>
+            <option value="AAAA">AAAA (IPv6)</option>
+            <option value="MX">MX (郵件)</option>
+            <option value="TXT">TXT</option>
+            <option value="CNAME">CNAME</option>
+            <option value="NS">NS</option>
+          </select>
+          <button class="btn btn--primary" id="btn-query-dns" style="font-weight: 700;">查詢 DNS</button>
+        </div>
+
+        <!-- 查詢結果表格 -->
+        <div id="dns-result-wrap" style="margin-top: var(--space-md);">
+          <div id="dns-loading" style="display: none; color: var(--color-text-tertiary); font-size: 0.875rem;">正在透過 Cloudflare DoH 查詢中...</div>
+          <div id="dns-table-container" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem; text-align: left;">
+              <thead>
+                <tr style="background: var(--color-bg); border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-size: 0.75rem;">
+                  <th style="padding: 10px 16px;">名稱 (Name)</th>
+                  <th style="padding: 10px 16px;">類型 (Type)</th>
+                  <th style="padding: 10px 16px;">TTL</th>
+                  <th style="padding: 10px 16px;">記錄值 (Data)</th>
+                </tr>
+              </thead>
+              <tbody id="dns-tbody">
+                <tr><td colspan="4" style="padding: 16px; text-align: center; color: var(--color-text-tertiary);">點擊「查詢 DNS」開始檢索</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

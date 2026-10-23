@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="UUID Generator — 產生符合 RFC4122 標準的 UUID v4，支援批次產生、大小寫轉換、連字號設定與一鍵複製。Qiyen Toolbox 線上工具。">
+  <title>UUID 產生器 (UUID Generator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">UUID 產生器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="9" x2="20" y2="9"/>
+              <line x1="4" y1="15" x2="20" y2="15"/>
+              <line x1="10" y1="3" x2="8" y2="21"/>
+              <line x1="16" y1="3" x2="14" y2="21"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">UUID 產生器</span>
+            <span class="tool-header__title-en">UUID Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">產生符合 RFC4122 標準的 UUID v4，支援多組批次產生與客製化格式。</p>
+      </header>
+
+      <!-- 設定選項區 -->
+      <div class="tool-section">
+        <div class="tool-section__title">產生設定</div>
+        
+        <div class="tool-options" style="flex-direction: column; gap: var(--space-md); align-items: stretch;">
+          
+          <!-- 數量設定 -->
+          <div style="display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+            <label for="uuid-count" class="form-label" style="margin: 0; min-width: 80px;">產生數量：</label>
+            <select class="form-select" id="uuid-count" style="width: 140px;">
+              <option value="1">1 組</option>
+              <option value="5" selected>5 組</option>
+              <option value="10">10 組</option>
+              <option value="20">20 組</option>
+              <option value="50">50 組</option>
+              <option value="100">100 組</option>
+            </select>
+          </div>
+
+          <!-- 格式勾選項 -->
+          <div style="display: flex; gap: var(--space-lg); flex-wrap: wrap;">
+            <label class="form-checkbox">
+              <input type="checkbox" id="opt-uppercase">
+              <span>大寫 (Uppercase)</span>
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" id="opt-hyphens" checked>
+              <span>包含連字號 (Hyphens: -)</span>
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" id="opt-braces">
+              <span>大括號包覆 ({...})</span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 操作按鈕 -->
+      <div class="tool-actions">
+        <button class="btn btn--primary" id="btn-generate" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          重新產生 (Generate)
+        </button>
+        <button class="btn btn--secondary" id="btn-copy-all" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          全部複製 (Copy All)
+        </button>
+        <button class="btn btn--ghost" id="btn-clear" type="button">
+          清除
+        </button>
+      </div>
+
+      <!-- 結果列表區 -->
+      <div class="tool-result" id="result-section">
+        <div class="tool-result__header">
+          <span class="tool-result__label" id="result-summary">產生結果 (5 組)</span>
+        </div>
+        <div id="uuid-list" style="display: flex; flex-direction: column; gap: var(--space-xs); margin-top: var(--space-sm);">
+          <!-- 由 script.js 動態渲染 -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

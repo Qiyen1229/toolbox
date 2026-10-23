@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <script>if (!location.pathname.endsWith("/") && !location.pathname.endsWith(".html")) { location.replace(location.pathname + "/" + location.search + location.hash); }</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="檔案名稱批次修改器 — 一次替大量檔案快速重新命名，支援自訂前後綴、字串取代、序號遞增與副檔名轉換，支援打包下載 ZIP。">
+  <title>檔案名稱批次修改器 (Batch File Renamer) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">檔案名稱批次修改器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M10 12h4" />
+              <path d="M10 16h4" />
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">檔案名稱批次修改器</span>
+            <span class="tool-header__title-en">Batch File Renamer</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">一次替大量檔案重新命名，支援自訂前後綴、尋找取代、數字序號與大小寫轉換，可一鍵打包 ZIP 下載。</p>
+      </header>
+
+      <!-- 檔案上傳拖曳區 -->
+      <div class="tool-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" multiple style="display: none;">
+          <div class="file-drop-zone__icon">📁</div>
+          <div class="file-drop-zone__text">點擊選擇檔案，或將多個檔案拖曳至此處</div>
+          <div class="file-drop-zone__hint">支援一次選取數十至數百個任意類型檔案（純本地處理不上傳）</div>
+        </div>
+      </div>
+
+      <!-- 重新命名規則設定區塊 -->
+      <div class="tool-section" id="rules-section" style="display: none;">
+        <div class="tool-section__title">重新命名規則設定</div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+          <!-- 前綴與後綴 -->
+          <div class="form-group">
+            <label class="form-label" for="rule-prefix">加入前綴 (Prefix)：</label>
+            <input type="text" class="form-input" id="rule-prefix" placeholder="例如：2026_或 IMG_">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rule-suffix">加入後綴 (Suffix，副檔名前)：</label>
+            <input type="text" class="form-input" id="rule-suffix" placeholder="例如：_final 或 _backup">
+          </div>
+
+          <!-- 尋找與取代 -->
+          <div class="form-group">
+            <label class="form-label" for="rule-find">尋找文字 (Find)：</label>
+            <input type="text" class="form-input" id="rule-find" placeholder="要被替換的原文字">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rule-replace">取代為 (Replace)：</label>
+            <input type="text" class="form-input" id="rule-replace" placeholder="替換後的新文字">
+          </div>
+
+          <!-- 自動序號 -->
+          <div class="form-group">
+            <label class="form-label" for="rule-numbering">自動序號格式：</label>
+            <select class="form-select" id="rule-numbering">
+              <option value="none" selected>不加入流水序號</option>
+              <option value="end-3">檔名末尾加上序號 (001, 002...)</option>
+              <option value="end-2">檔名末尾加上序號 (01, 02...)</option>
+              <option value="start-3">檔名開頭加上序號 (001_, 002_...)</option>
+              <option value="replace">全以序號取代檔名 (001, 002...)</option>
+            </select>
+          </div>
+
+          <!-- 大小寫轉換 -->
+          <div class="form-group">
+            <label class="form-label" for="rule-case">檔名大小寫：</label>
+            <select class="form-select" id="rule-case">
+              <option value="keep" selected>保持原本大小寫</option>
+              <option value="lower">全部轉換為小寫 (lowercase)</option>
+              <option value="upper">全部轉換為大寫 (UPPERCASE)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 預覽表格與下載 -->
+      <div class="tool-section" id="table-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title" id="file-count-title">檔案列表預覽 (0 個檔案)</div>
+          <div style="display: flex; gap: var(--space-xs);">
+            <button class="btn btn--sm btn--ghost" id="btn-export-list" type="button">匯出對照清單 (TXT)</button>
+            <button class="btn btn--sm btn--ghost" id="btn-clear-all" type="button">清空全部</button>
+          </div>
+        </div>
+
+        <div
+          style="overflow-x: auto; margin-top: var(--space-md); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+            <thead>
+              <tr style="background: var(--color-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 10px 14px; width: 50px;">#</th>
+                <th style="padding: 10px 14px;">原始檔名</th>
+                <th style="padding: 10px 14px;">大小</th>
+                <th style="padding: 10px 14px; color: var(--color-accent);">重新命名後 (預覽)</th>
+              </tr>
+            </thead>
+            <tbody id="files-tbody">
+              <!-- 動態渲染 -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 動作按鈕 -->
+        <div class="tool-actions" style="margin-top: var(--space-xl);">
+          <button class="btn btn--primary btn--lg" id="btn-download-zip" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            一鍵打包下載重新命名後的檔案 (ZIP)
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/vendor/jszip.min.js"></script>
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

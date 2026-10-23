@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Markdown → HTML — 將 Markdown 語法轉換為乾淨標準的 HTML 原始碼與富文本，支援表格、代碼塊、標題與即時雙向預覽。Qiyen Toolbox。">
+  <title>Markdown → HTML 轉換器 — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Markdown → HTML</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">Markdown → HTML 轉換器</span>
+            <span class="tool-header__title-en">Markdown to HTML Converter</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">將 Markdown 格式文字即時轉譯為乾淨標準的 HTML 代碼，支援 GFM 表格、代碼塊與一鍵複製富文本。</p>
+      </header>
+
+      <!-- 左右分割 -->
+      <div class="tool-split">
+        <!-- 左側：Markdown 輸入 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">Markdown 輸入</div>
+            <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例</button>
+          </div>
+          <textarea class="form-textarea" id="md-input" rows="16" placeholder="請在此輸入 Markdown 內容…" style="font-family: var(--font-mono, monospace); font-size: 0.8125rem;"></textarea>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-sm);">
+            <span style="font-size: 0.8125rem; color: var(--color-text-tertiary);" id="md-stats">字數：0</span>
+            <button class="btn btn--sm btn--ghost" id="btn-clear" type="button">清空</button>
+          </div>
+        </div>
+
+        <!-- 右側：HTML 結果與預覽 -->
+        <div class="tool-section" style="margin-bottom: 0; display: flex; flex-direction: column;">
+          <div class="tool-section__header">
+            <!-- 視圖切換 -->
+            <div style="display: flex; gap: var(--space-xs);">
+              <button class="btn btn--sm btn--primary" id="view-preview">預覽畫面</button>
+              <button class="btn btn--sm btn--ghost" id="view-code">HTML 程式碼</button>
+            </div>
+            <div style="display: flex; gap: var(--space-xs);">
+              <button class="btn btn--sm btn--secondary" id="btn-copy-html" type="button">複製 HTML</button>
+              <button class="btn btn--sm btn--secondary" id="btn-copy-rich" type="button">複製富文本</button>
+            </div>
+          </div>
+
+          <!-- 畫面預覽區 -->
+          <div id="preview-container" style="flex: 1; min-height: 320px; padding: var(--space-md); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow-y: auto; line-height: 1.7; font-size: 0.9375rem;">
+          </div>
+
+          <!-- 代碼檢視區 -->
+          <textarea class="form-textarea" id="html-code-container" rows="16" readonly style="display: none; flex: 1; font-family: var(--font-mono, monospace); font-size: 0.8125rem;"></textarea>
+
+          <div class="tool-actions" style="margin-top: var(--space-md);">
+            <button class="btn btn--primary btn--sm" id="btn-download-html" type="button">下載完整 .html 網頁檔</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DNS Record Lookup — 線上即時查詢網域 DNS 紀錄（A、AAAA、CNAME、MX、TXT、NS），純前端 DNS-over-HTTPS 加密直查。">
+  <title>DNS 紀錄查詢 (DNS Record Lookup) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">DNS 紀錄查詢</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">DNS 紀錄查詢</span>
+            <span class="tool-header__title-en">DNS Record Lookup</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">透過加密 DNS-over-HTTPS (DoH) 純前端即時查詢網域 A、AAAA、CNAME、MX、TXT、NS 等解析紀錄。</p>
+      </header>
+
+      <!-- 輸入查詢區塊 -->
+      <div class="tool-section">
+        <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 260px;">
+            <input type="text" class="form-input" id="domain-input" placeholder="輸入網域名稱，例如：github.com 或 google.com" value="github.com">
+          </div>
+
+          <div style="width: 140px;">
+            <select class="form-select" id="record-type">
+              <option value="A" selected>A (IPv4)</option>
+              <option value="AAAA">AAAA (IPv6)</option>
+              <option value="CNAME">CNAME (別名)</option>
+              <option value="MX">MX (郵件交換)</option>
+              <option value="TXT">TXT (文字/SPF)</option>
+              <option value="NS">NS (名稱伺服器)</option>
+              <option value="SOA">SOA (起始授權)</option>
+            </select>
+          </div>
+
+          <button class="btn btn--primary" id="btn-lookup" type="button" style="min-width: 120px;">
+            查詢 DNS
+          </button>
+        </div>
+
+        <!-- 常用網域快捷標籤 -->
+        <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-md); align-items: center;">
+          <span style="font-size: 0.8125rem; color: var(--color-text-tertiary);">快速測試：</span>
+          <button class="btn btn--sm btn--ghost btn-preset" data-domain="google.com">google.com</button>
+          <button class="btn btn--sm btn--ghost btn-preset" data-domain="cloudflare.com">cloudflare.com</button>
+          <button class="btn btn--sm btn--ghost btn-preset" data-domain="ntub.edu.tw">ntub.edu.tw (北商大)</button>
+          <button class="btn btn--sm btn--ghost btn-preset" data-domain="apple.com">apple.com</button>
+        </div>
+      </div>
+
+      <!-- 查詢結果展示區 -->
+      <div class="tool-section" id="result-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title" id="result-title">解析紀錄結果</div>
+          <button class="btn btn--sm btn--secondary" id="btn-copy-result" type="button">複製查詢結果</button>
+        </div>
+
+        <div style="overflow-x: auto; margin-top: var(--space-md); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+            <thead>
+              <tr style="background: var(--color-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 10px 14px; width: 80px;">類型</th>
+                <th style="padding: 10px 14px;">主機名稱 (Name)</th>
+                <th style="padding: 10px 14px; width: 90px;">TTL</th>
+                <th style="padding: 10px 14px; color: var(--color-accent);">解析目標 / 內容 (Data)</th>
+              </tr>
+            </thead>
+            <tbody id="records-tbody">
+              <!-- 動態渲染 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

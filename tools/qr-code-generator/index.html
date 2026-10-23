@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="QR Code 產生器 — 一行網址極速即時生成 QR Code，支援下載高畫質 PNG 與複製圖片，100% 瀏覽器本地運算。Qiyen Toolbox。">
+  <title>QR Code 產生器 (QR Code Generator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container" style="max-width: 720px;">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">QR Code 產生器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header" style="text-align: center;">
+        <h1 class="tool-header__title" style="justify-content: center;">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="3" height="3"/>
+              <line x1="21" y1="14" x2="21" y2="14.01"/>
+              <line x1="14" y1="21" x2="14" y2="21.01"/>
+              <line x1="21" y1="21" x2="21" y2="21.01"/>
+              <line x1="21" y1="17" x2="21" y2="17.01"/>
+              <line x1="17" y1="21" x2="17" y2="21.01"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">QR Code 產生器</span>
+            <span class="tool-header__title-en">QR Code Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">輸入一行網址或文字，立即產生高解析度 QR Code，支援一鍵下載與複製。</p>
+      </header>
+
+      <!-- 一行網址輸入區 -->
+      <div class="tool-section" style="padding: var(--space-lg);">
+        <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+          <input
+            type="text"
+            class="form-input"
+            id="qr-url-input"
+            value="https://github.com"
+            placeholder="請在此輸入一行網址，例如 https://example.com..."
+            style="flex: 1; min-width: 240px; font-size: 1rem; font-family: var(--font-mono, monospace);"
+            autocomplete="off"
+            autofocus
+          >
+          <button class="btn btn--primary" id="btn-generate" style="font-weight: 700; min-width: 120px;">
+            立即生成 ⚡
+          </button>
+        </div>
+      </div>
+
+      <!-- QR Code 展示卡片 -->
+      <div class="tool-section" style="text-align: center; padding: var(--space-2xl) var(--space-lg); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <!-- 容器（白底襯托以利掃描） -->
+        <div style="
+          padding: 18px;
+          background: #ffffff;
+          border-radius: var(--radius-lg);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+          display: inline-block;
+          border: 1px solid var(--color-border);
+          transition: transform 0.3s ease;
+        ">
+          <div id="qrcode-box" style="display: flex; align-items: center; justify-content: center; min-width: 220px; min-height: 220px;"></div>
+        </div>
+
+        <!-- 網址預覽 -->
+        <div id="current-url-display" style="
+          margin-top: var(--space-md);
+          font-family: var(--font-mono, monospace);
+          font-size: 0.875rem;
+          color: var(--color-text-secondary);
+          word-break: break-all;
+          max-width: 480px;
+        ">https://github.com</div>
+
+        <!-- 下載與操作按鈕 -->
+        <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center; margin-top: var(--space-lg);">
+          <button class="btn btn--primary" id="btn-download" type="button" style="font-weight: 600;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            下載 PNG 圖片
+          </button>
+          <button class="btn btn--secondary" id="btn-copy-img" type="button">
+            複製圖片
+          </button>
+          <a class="btn btn--ghost" id="link-open-url" href="https://github.com" target="_blank" rel="noopener noreferrer">
+            開啟網址 ↗
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="../../libs/qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

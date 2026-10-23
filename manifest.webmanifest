@@ -1,0 +1,30 @@
+{
+  "name": "Qiyen Toolbox · 個人工具箱",
+  "short_name": "Qiyen",
+  "description": "集結 34 款實用小工具與開發者專屬套件，純前端極速本地執行，不上傳任何隱私資料。",
+  "start_url": "/index.html",
+  "id": "/index.html",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#0b1120",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "utilities",
+    "developer",
+    "productivity"
+  ]
+}

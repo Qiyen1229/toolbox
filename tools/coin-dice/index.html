@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="拋硬幣與擲骰子 — 逼真 3D 翻轉動畫、多顆骰子同擲、點數總和與正反面機率統計。Qiyen Toolbox。">
+  <title>拋硬幣 / 擲骰子 (Coin & Dice) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+  <style>
+    .coin {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      box-shadow: 0 10px 25px rgba(217, 119, 6, 0.35), inset 0 2px 5px rgba(255, 255, 255, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.25rem;
+      font-weight: 900;
+      color: #fff;
+      border: 5px solid #fef08a;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .coin.flipping {
+      animation: flipCoin 0.8s ease-out;
+    }
+    @keyframes flipCoin {
+      0% { transform: scale(1) rotateY(0); }
+      50% { transform: scale(1.3) rotateY(720deg); }
+      100% { transform: scale(1) rotateY(1440deg); }
+    }
+
+    .die {
+      width: 72px;
+      height: 72px;
+      background: #ffffff;
+      color: #1e293b;
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: 900;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18), inset 0 0 0 2px #e2e8f0;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+    .die.rolling {
+      animation: rollDice 0.6s ease-out;
+    }
+    @keyframes rollDice {
+      0% { transform: rotate(0) scale(1); }
+      25% { transform: rotate(45deg) scale(1.1); }
+      50% { transform: rotate(-30deg) scale(1.1); }
+      75% { transform: rotate(15deg) scale(1.05); }
+      100% { transform: rotate(0) scale(1); }
+    }
+
+    /* 遊戲模式切換美化 */
+    .game-switch-bar {
+      display: inline-flex;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 9999px;
+      padding: 4px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      gap: 6px;
+    }
+    .game-switch-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 24px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .game-switch-btn:hover {
+      color: var(--color-text-primary);
+    }
+    .game-switch-btn.active {
+      background: linear-gradient(135deg, var(--color-accent) 0%, #8b5cf6 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    }
+
+    /* 專屬操作按鈕美化 */
+    .btn-action-coin {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      padding: 14px 40px !important;
+      font-size: 1.125rem !important;
+      font-weight: 800 !important;
+      border-radius: 9999px !important;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45) !important;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease !important;
+    }
+    .btn-action-coin:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 28px rgba(245, 158, 11, 0.55) !important;
+    }
+    .btn-action-coin:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    .btn-action-dice {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      padding: 14px 40px !important;
+      font-size: 1.125rem !important;
+      font-weight: 800 !important;
+      border-radius: 9999px !important;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45) !important;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease !important;
+    }
+    .btn-action-dice:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 28px rgba(168, 85, 247, 0.55) !important;
+    }
+    .btn-action-dice:active {
+      transform: translateY(1px) scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">拋硬幣 / 擲骰子</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+              <line x1="12" y1="6" x2="12" y2="8"></line>
+              <line x1="12" y1="16" x2="12" y2="18"></line>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">拋硬幣與擲骰子</span>
+            <span class="tool-header__title-en">Coin Flip & Dice Roller</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">二選一難以決定？玩桌遊缺骰子？逼真 3D 翻動動畫，支援多骰同擲與機率統計。</p>
+      </header>
+
+      <!-- 模式切換美化膠囊列 -->
+      <div style="display: flex; justify-content: center; margin-bottom: var(--space-xl);">
+        <div class="game-switch-bar" id="game-modes">
+          <button class="game-switch-btn active" data-mode="coin">
+            <span style="font-size: 1.15rem;">🪙</span> 拋硬幣
+          </button>
+          <button class="game-switch-btn" data-mode="dice">
+            <span style="font-size: 1.15rem;">🎲</span> 擲骰子
+          </button>
+        </div>
+      </div>
+
+      <!-- 1. 拋硬幣區域 -->
+      <div class="tool-section" id="coin-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-2xl) var(--space-md); text-align: center;">
+        <div class="coin" id="coin-element" title="點擊硬幣拋擲">正面</div>
+        <div id="coin-result-text" style="font-size: 1.5rem; font-weight: 800; color: var(--color-accent); margin-top: var(--space-lg);">
+          點擊硬幣或下方按鈕拋擲
+        </div>
+
+        <button class="btn-action-coin" id="btn-flip-coin" style="margin-top: var(--space-xl);">
+          <span style="font-size: 1.25rem;">🪙</span> 拋擲硬幣
+        </button>
+
+        <div style="margin-top: var(--space-lg); font-size: 0.875rem; color: var(--color-text-secondary); display: flex; gap: var(--space-xl); background: var(--color-surface); padding: 8px 24px; border-radius: 9999px; border: 1px solid var(--color-border);">
+          <span>正面：<strong id="stat-heads" style="color: #f59e0b;">0</strong> 次</span>
+          <span>反面：<strong id="stat-tails" style="color: var(--color-text-primary);">0</strong> 次</span>
+          <span>總計：<strong id="stat-total-flips" style="color: var(--color-accent);">0</strong> 次</span>
+        </div>
+      </div>
+
+      <!-- 2. 擲骰子區域 -->
+      <div class="tool-section" id="dice-section" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-2xl) var(--space-md); text-align: center;">
+        
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: var(--space-lg); background: var(--color-surface); padding: 6px 16px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+          <span style="font-size: 0.875rem; font-weight: 600;">選擇骰子數量：</span>
+          <select class="form-input" id="dice-count" style="width: 88px; font-weight: 700; padding: 4px 8px;">
+            <option value="1">1 顆</option>
+            <option value="2" selected>2 顆</option>
+            <option value="3">3 顆</option>
+            <option value="4">4 顆</option>
+            <option value="5">5 顆</option>
+            <option value="6">6 顆</option>
+          </select>
+        </div>
+
+        <!-- 骰子容器 -->
+        <div id="dice-container" style="display: flex; gap: var(--space-md); flex-wrap: wrap; justify-content: center; min-height: 80px; align-items: center;">
+          <!-- 動態骰子 -->
+        </div>
+
+        <div id="dice-sum-display" style="font-size: 1.85rem; font-weight: 900; color: var(--color-accent); margin-top: var(--space-lg);">
+          總點數：0
+        </div>
+
+        <button class="btn-action-dice" id="btn-roll-dice" style="margin-top: var(--space-xl);">
+          <span style="font-size: 1.25rem;">🎲</span> 擲出骰子！
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

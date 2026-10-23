@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <script>if (!location.pathname.endsWith("/") && !location.pathname.endsWith(".html")) { location.replace(location.pathname + "/" + location.search + location.hash); }</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Base64 Encoder / Decoder — Base64 編碼與解碼，支援文字的即時轉換。Qiyen Toolbox 線上工具。">
+  <title>Base64 編碼/解碼 (Base64 Encoder / Decoder) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+  <style>
+    .mode-tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 2px;
+      margin-bottom: var(--space-lg);
+    }
+
+    .mode-tab {
+      flex: 1;
+      padding: var(--space-sm) var(--space-md);
+      border: none;
+      background: transparent;
+      border-radius: calc(var(--radius-md) - 2px);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .mode-tab--active {
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Base64 編碼/解碼</span>
+      </div>
+
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">Base64 編碼/解碼</span>
+            <span class="tool-header__title-en">Base64 Encoder / Decoder</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">Base64 編碼與解碼，支援 UTF-8 文字的即時轉換。</p>
+      </header>
+
+      <!-- 模式切換 -->
+      <div class="mode-tabs">
+        <button class="mode-tab mode-tab--active" data-mode="encode">Encode（編碼）</button>
+        <button class="mode-tab" data-mode="decode">Decode（解碼）</button>
+      </div>
+
+      <!-- 輸入區 -->
+      <div class="tool-section">
+        <div class="tool-section__title" id="input-label">原始文字</div>
+        <textarea class="form-textarea" id="input-text" placeholder="在此輸入要編碼的文字..." rows="6"
+          spellcheck="false"></textarea>
+      </div>
+
+      <!-- 操作按鈕 -->
+      <div class="tool-actions">
+        <button class="btn btn--primary" id="btn-convert" type="button">
+          🔄 轉換
+        </button>
+        <button class="btn btn--secondary" id="btn-swap" type="button">
+          ⇅ 交換輸入/輸出
+        </button>
+        <button class="btn btn--ghost" id="btn-clear" type="button">
+          清除
+        </button>
+      </div>
+
+      <!-- 結果區 -->
+      <div class="tool-result" id="result-section" style="display:none;">
+        <div class="tool-result__header">
+          <span class="tool-result__label" id="output-label">Base64 結果</span>
+          <button class="btn btn--sm btn--secondary" id="btn-copy" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" style="width:14px;height:14px;">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            複製
+          </button>
+        </div>
+        <pre class="tool-result__content" id="output-text"></pre>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

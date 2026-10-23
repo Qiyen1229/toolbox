@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="多國貨幣匯率換算器 — 支援新台幣、美元、日圓、歐元、人民幣等雙向即時換算，離線亦可使用。Qiyen Toolbox。">
+  <title>匯率換算器 (Currency Converter) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">匯率換算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">多國貨幣匯率換算器</span>
+            <span class="tool-header__title-en">Currency Converter</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">各國主要貨幣雙向換算，內建基準匯率離線可用，支援一鍵即時更新或自訂匯率。</p>
+      </header>
+
+      <!-- 主要雙幣換算區 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-md); align-items: flex-end;">
+          
+          <!-- 來源幣種 -->
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" for="from-currency">換算來源幣別：</label>
+            <div style="display: flex; gap: 8px;">
+              <select class="form-input" id="from-currency" style="width: 140px; font-weight: 700;">
+                <option value="TWD" selected>🇹🇼 TWD (新台幣)</option>
+                <option value="USD">🇺🇸 USD (美元)</option>
+                <option value="JPY">🇯🇵 JPY (日圓)</option>
+                <option value="EUR">🇪🇺 EUR (歐元)</option>
+                <option value="GBP">🇬🇧 GBP (英鎊)</option>
+                <option value="CNY">🇨🇳 CNY (人民幣)</option>
+                <option value="KRW">🇰🇷 KRW (韓元)</option>
+                <option value="HKD">🇭🇰 HKD (港幣)</option>
+                <option value="SGD">🇸🇬 SGD (新加坡幣)</option>
+                <option value="AUD">🇦🇺 AUD (澳幣)</option>
+                <option value="CAD">🇨🇦 CAD (加拿大幣)</option>
+              </select>
+              <input type="number" class="form-input" id="from-amount" value="10000" min="0" step="any" style="flex: 1; font-size: 1.125rem; font-weight: 700;">
+            </div>
+          </div>
+
+          <!-- 對調按鈕 -->
+          <div style="padding-bottom: 2px;">
+            <button class="btn btn--secondary" id="btn-swap" style="padding: 10px 14px;" title="交換幣別">
+              ⇄
+            </button>
+          </div>
+
+          <!-- 目標幣種 -->
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" for="to-currency">換算目標幣別：</label>
+            <div style="display: flex; gap: 8px;">
+              <select class="form-input" id="to-currency" style="width: 140px; font-weight: 700;">
+                <option value="TWD">🇹🇼 TWD (新台幣)</option>
+                <option value="USD">🇺🇸 USD (美元)</option>
+                <option value="JPY" selected>🇯🇵 JPY (日圓)</option>
+                <option value="EUR">🇪🇺 EUR (歐元)</option>
+                <option value="GBP">🇬🇧 GBP (英鎊)</option>
+                <option value="CNY">🇨🇳 CNY (人民幣)</option>
+                <option value="KRW">🇰🇷 KRW (韓元)</option>
+                <option value="HKD">🇭🇰 HKD (港幣)</option>
+                <option value="SGD">🇸🇬 SGD (新加坡幣)</option>
+                <option value="AUD">🇦🇺 AUD (澳幣)</option>
+                <option value="CAD">🇨🇦 CAD (加拿大幣)</option>
+              </select>
+              <input type="number" class="form-input" id="to-amount" readonly style="flex: 1; font-size: 1.125rem; font-weight: 700; background: var(--color-surface); color: var(--color-accent);">
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top: var(--space-md); display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; color: var(--color-text-secondary); flex-wrap: wrap; gap: 8px;">
+          <span id="rate-display">匯率：1 TWD ≈ 4.75 JPY</span>
+          <button class="btn btn--xs btn--ghost" id="btn-refresh-rate">更新即時匯率</button>
+        </div>
+      </div>
+
+      <!-- 全球主要貨幣即時對照表 -->
+      <div class="tool-section">
+        <h3 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: var(--space-sm);">同額換算為其他全球貨幣</h3>
+        <div id="currencies-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-sm);">
+          <!-- 動態渲染卡片 -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

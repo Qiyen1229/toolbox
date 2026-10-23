@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <script>if (!location.pathname.endsWith("/") && !location.pathname.endsWith(".html")) { location.replace(location.pathname + "/" + location.search + location.hash); }</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="年齡計算器 — 出生日期精確換算足歲、虛歲、生日倒數、生肖與星座。Qiyen Toolbox。">
+  <title>年齡計算器 (Age Calculator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">年齡計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">年齡與生肖星座計算器</span>
+            <span class="tool-header__title-en">Age & Birthday Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">輸入出生日期，精確換算實歲、虛歲、累計存活天數、生肖、星座與下次生日倒數。</p>
+      </header>
+
+      <!-- 輸入區塊 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+
+          <div class="form-group">
+            <label class="form-label" for="birth-date">出生日期：</label>
+            <input type="date" class="form-input" id="birth-date" value="2005-09-15"
+              style="font-size: 1.125rem; font-weight: 700;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="target-date">計算基準日（預設今天）：</label>
+            <input type="date" class="form-input" id="target-date">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 計算結果卡片 -->
+      <div class="tool-section">
+        <div
+          style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(168,85,247,0.08) 100%); border: 2px solid var(--color-accent); border-radius: var(--radius-lg); padding: var(--space-lg);">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
+            <div>
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary); text-transform: uppercase;">精確實歲
+                (Exact Age)</span>
+              <div id="age-exact"
+                style="font-size: 2.5rem; font-weight: 800; color: var(--color-accent); line-height: 1.2;">
+                21 歲 0 個月 7 天
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary);">傳統虛歲</span>
+              <div id="age-virtual" style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-primary);">
+                22 歲
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-md); border-top: 1px dashed var(--color-border); padding-top: var(--space-md); font-size: 0.875rem;">
+            <div>
+              <span style="color: var(--color-text-secondary);">下個生日倒數：</span>
+              <div id="next-birthday-days"
+                style="font-weight: 700; color: var(--color-warning); font-size: 1.125rem; margin-top: 2px;">還有 358 天
+              </div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">十二生肖：</span>
+              <div id="chinese-zodiac" style="font-weight: 700; font-size: 1.125rem; margin-top: 2px;">🐔 雞</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">西洋星座：</span>
+              <div id="western-zodiac" style="font-weight: 700; font-size: 1.125rem; margin-top: 2px;">♍ 處女座</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">累計生活天數：</span>
+              <div id="total-lived-days" style="font-weight: 700; margin-top: 2px;">7,678 天</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

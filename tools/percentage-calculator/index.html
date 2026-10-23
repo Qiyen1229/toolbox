@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="百分比計算器 — 涵蓋佔比、增加、減少、成長率等 5 種常用百分比運算模式。Qiyen Toolbox。">
+  <title>百分比計算器 (Percentage Calculator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">百分比計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="5" x2="5" y2="19"></line>
+              <circle cx="6.5" cy="6.5" r="2.5"></circle>
+              <circle cx="17.5" cy="17.5" r="2.5"></circle>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">百分比計算器</span>
+            <span class="tool-header__title-en">Percentage Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">涵蓋日常與財務常見的 5 種百分比運算，輸入數值即時呈現計算結果。</p>
+      </header>
+
+      <!-- 計算卡片群組 -->
+      <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+
+        <!-- 模式 1: A 的 P% 是多少？ -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <h3 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--color-accent);">
+            1. 計算百分比數值（A 的 P% 是多少？）
+          </h3>
+          <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
+            <span>數字</span>
+            <input type="number" class="form-input calc-input" id="m1-val" value="500" style="width: 120px;">
+            <span>的</span>
+            <input type="number" class="form-input calc-input" id="m1-pct" value="15" style="width: 100px;">
+            <span>% 是</span>
+            <span class="result-badge" id="m1-res" style="font-weight: 800; font-size: 1.125rem; color: var(--color-accent); min-width: 80px; text-align: right;">75</span>
+          </div>
+        </div>
+
+        <!-- 模式 2: A 是 B 的百分之幾？ -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <h3 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--color-accent);">
+            2. 計算佔比比例（A 是 B 的百分之幾？）
+          </h3>
+          <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
+            <span>數字</span>
+            <input type="number" class="form-input calc-input" id="m2-a" value="45" style="width: 120px;">
+            <span>是</span>
+            <input type="number" class="form-input calc-input" id="m2-b" value="180" style="width: 120px;">
+            <span>的</span>
+            <span class="result-badge" id="m2-res" style="font-weight: 800; font-size: 1.125rem; color: var(--color-accent); min-width: 80px; text-align: right;">25%</span>
+          </div>
+        </div>
+
+        <!-- 模式 3: A 增加 / 減少 P% 後是多少？ -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <h3 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--color-accent);">
+            3. 百分比增減後的結果（A 增加 / 減少 P%）
+          </h3>
+          <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
+            <span>數字</span>
+            <input type="number" class="form-input calc-input" id="m3-val" value="1200" style="width: 120px;">
+            <select class="form-input" id="m3-op" style="width: 90px;">
+              <option value="add">增加 (+)</option>
+              <option value="sub">減少 (-)</option>
+            </select>
+            <input type="number" class="form-input calc-input" id="m3-pct" value="20" style="width: 100px;">
+            <span>% 結果為</span>
+            <span class="result-badge" id="m3-res" style="font-weight: 800; font-size: 1.125rem; color: var(--color-accent); min-width: 80px; text-align: right;">1,440</span>
+          </div>
+        </div>
+
+        <!-- 模式 4: 從 A 變到 B，百分比變化？ -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <h3 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--color-accent);">
+            4. 兩數成長 / 衰退變化率（從 A 變到 B）
+          </h3>
+          <div style="display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap;">
+            <span>從 原值</span>
+            <input type="number" class="form-input calc-input" id="m4-from" value="80" style="width: 120px;">
+            <span>變為 新值</span>
+            <input type="number" class="form-input calc-input" id="m4-to" value="100" style="width: 120px;">
+            <span>變化率為</span>
+            <span class="result-badge" id="m4-res" style="font-weight: 800; font-size: 1.125rem; color: var(--color-success); min-width: 80px; text-align: right;">+25.00%</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

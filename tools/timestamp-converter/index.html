@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Timestamp Converter — Unix 時間戳與標準日期時間互轉工具，支援秒與毫秒自動判讀、即時本地時鐘與相對時間。Qiyen Toolbox 線上工具。">
+  <title>時間戳轉換器 (Timestamp Converter) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">時間戳轉換器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">時間戳轉換器</span>
+            <span class="tool-header__title-en">Timestamp Converter</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">Unix Timestamp（時間戳）與標準日期時間互轉，支援秒與毫秒自動判讀。</p>
+      </header>
+
+      <!-- 目前時間戳跑馬資訊 -->
+      <div style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-md);
+        padding: var(--space-md) var(--space-lg);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--space-xl);
+      ">
+        <div>
+          <span style="font-size: 0.8125rem; color: var(--color-text-tertiary); display: block;">目前 Unix 時間戳 (Current Timestamp)</span>
+          <div style="font-family: var(--font-mono, monospace); font-size: 1.25rem; font-weight: 700; color: var(--color-accent); margin-top: 2px;">
+            <span id="current-timestamp-sec">--</span> 秒 (s)
+            <span style="font-size: 0.875rem; color: var(--color-text-secondary); margin-left: var(--space-sm);">/ <span id="current-timestamp-ms">--</span> 毫秒 (ms)</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: var(--space-sm);">
+          <button class="btn btn--sm btn--secondary" id="btn-copy-curr-sec" type="button">複製秒數</button>
+          <button class="btn btn--sm btn--secondary" id="btn-copy-curr-ms" type="button">複製毫秒</button>
+          <button class="btn btn--sm btn--ghost" id="btn-pause-clock" type="button">暫停</button>
+        </div>
+      </div>
+
+      <!-- 區塊 1：時間戳轉日期 -->
+      <div class="tool-section">
+        <div class="tool-section__title">1. Unix 時間戳 ➔ 日期時間</div>
+        
+        <div style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-md); flex-wrap: wrap;">
+          <input
+            type="number"
+            class="form-input"
+            id="ts-input"
+            placeholder="例如：1700000000 或 1700000000000"
+            style="flex: 1; min-width: 200px; font-family: var(--font-mono, monospace);"
+          >
+          <select class="form-select" id="ts-unit-select" style="width: 140px;">
+            <option value="auto" selected>自動判斷</option>
+            <option value="sec">秒 (10 位)</option>
+            <option value="ms">毫秒 (13 位)</option>
+          </select>
+          <button class="btn btn--primary" id="btn-convert-ts" type="button">轉換</button>
+          <button class="btn btn--ghost" id="btn-ts-now" type="button">帶入現在</button>
+        </div>
+
+        <!-- 轉換結果表格 -->
+        <div id="ts-result-box" style="display: none; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 140px 1fr auto; padding: 10px 16px; border-bottom: 1px solid var(--color-border); align-items: center;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary);">本地時間 (Local)</span>
+            <span id="res-local" style="font-family: var(--font-mono, monospace); font-weight: 500;"></span>
+            <button class="btn btn--sm btn--ghost btn-copy-row" data-target="res-local">複製</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 140px 1fr auto; padding: 10px 16px; border-bottom: 1px solid var(--color-border); align-items: center;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary);">UTC 時間</span>
+            <span id="res-utc" style="font-family: var(--font-mono, monospace); font-weight: 500;"></span>
+            <button class="btn btn--sm btn--ghost btn-copy-row" data-target="res-utc">複製</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 140px 1fr auto; padding: 10px 16px; border-bottom: 1px solid var(--color-border); align-items: center;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary);">ISO 8601</span>
+            <span id="res-iso" style="font-family: var(--font-mono, monospace); font-weight: 500;"></span>
+            <button class="btn btn--sm btn--ghost btn-copy-row" data-target="res-iso">複製</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 140px 1fr auto; padding: 10px 16px; align-items: center;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary);">相對時間</span>
+            <span id="res-relative" style="color: var(--color-accent); font-weight: 600;"></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 區塊 2：日期時間轉時間戳 -->
+      <div class="tool-section">
+        <div class="tool-section__title">2. 日期時間 ➔ Unix 時間戳</div>
+        
+        <div style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-md); flex-wrap: wrap;">
+          <input
+            type="datetime-local"
+            class="form-input"
+            id="date-input"
+            step="1"
+            style="flex: 1; min-width: 220px;"
+          >
+          <button class="btn btn--primary" id="btn-convert-date" type="button">轉換</button>
+          <button class="btn btn--ghost" id="btn-date-now" type="button">設定為現在</button>
+          <button class="btn btn--ghost" id="btn-date-today" type="button">今日 00:00</button>
+        </div>
+
+        <!-- 轉換結果表格 -->
+        <div id="date-result-box" style="display: none; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 140px 1fr auto; padding: 10px 16px; border-bottom: 1px solid var(--color-border); align-items: center;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary);">秒數 (Seconds, 10 位)</span>
+            <span id="res-sec" style="font-family: var(--font-mono, monospace); font-weight: 600; color: var(--color-accent);"></span>
+            <button class="btn btn--sm btn--ghost btn-copy-row" data-target="res-sec">複製</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 140px 1fr auto; padding: 10px 16px; align-items: center;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-text-secondary);">毫秒 (Milliseconds, 13 位)</span>
+            <span id="res-ms" style="font-family: var(--font-mono, monospace); font-weight: 600; color: var(--color-accent);"></span>
+            <button class="btn btn--sm btn--ghost btn-copy-row" data-target="res-ms">複製</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

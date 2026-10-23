@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Image Converter — 本地圖片格式互轉工具，支援 JPG、PNG、WEBP、SVG、BMP 相互轉換，100% 瀏覽器本地運算，安全迅速。">
+  <title>Image Converter — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Image Converter</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12h16"/>
+              <polyline points="14 6 20 12 14 18"/>
+            </svg>
+          </div>
+          Image Converter
+        </h1>
+        <p class="tool-header__description">本地圖片格式轉換器，支援 PNG、JPG、WEBP 互轉，不上傳至外部伺服器。</p>
+      </header>
+
+      <!-- 檔案拖曳上傳區 -->
+      <div class="tool-section" id="upload-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept="image/*" style="display: none;">
+          <div class="file-drop-zone__icon">🔄</div>
+          <div class="file-drop-zone__text">點擊選擇圖片，或直接拖曳圖片至此處</div>
+          <div class="file-drop-zone__hint">支援 PNG、JPG、WEBP、BMP、SVG 等常見格式</div>
+        </div>
+      </div>
+
+      <!-- 轉換選項區塊 -->
+      <div class="tool-section" id="convert-options" style="display: none;">
+        <div class="tool-section__title">目標格式設定</div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-lg); align-items: end;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="target-format">轉換為：</label>
+            <select class="form-select" id="target-format">
+              <option value="image/png">PNG 格式 (.png — 支援透明通道)</option>
+              <option value="image/jpeg">JPG / JPEG 格式 (.jpg)</option>
+              <option value="image/webp">WEBP 格式 (.webp — 高壓縮比)</option>
+            </select>
+          </div>
+
+          <!-- JPG / WEBP 品質設定 -->
+          <div class="form-group" id="quality-wrapper" style="margin-bottom: 0; display: none;">
+            <label class="form-label" for="conv-quality">
+              品質：<span id="conv-quality-val" style="color: var(--color-accent); font-weight: 700;">92%</span>
+            </label>
+            <input type="range" class="form-range" id="conv-quality" min="10" max="100" value="92">
+          </div>
+
+          <div>
+            <button class="btn btn--primary" id="btn-do-convert" type="button" style="width: 100%;">
+              立即轉換格式
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 預覽與下載 -->
+      <div class="tool-section" id="result-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title">預覽與檔案資訊</div>
+        </div>
+
+        <div class="tool-split" style="margin-top: var(--space-md);">
+          <!-- 原始 -->
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+            <div style="font-weight: 600; margin-bottom: var(--space-sm); color: var(--color-text-secondary);">原始檔案</div>
+            <div style="height: 200px; display: flex; align-items: center; justify-content: center; background: var(--color-bg); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: var(--space-sm);">
+              <img id="img-orig" style="max-height: 100%; max-width: 100%; object-fit: contain;" alt="原始圖">
+            </div>
+            <div id="info-orig" style="font-size: 0.875rem; color: var(--color-text-tertiary);">--</div>
+          </div>
+
+          <!-- 轉換後 -->
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+            <div style="font-weight: 600; margin-bottom: var(--space-sm); color: var(--color-accent);">轉換結果</div>
+            <div style="height: 200px; display: flex; align-items: center; justify-content: center; background: var(--color-bg); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: var(--space-sm);">
+              <img id="img-converted" style="max-height: 100%; max-width: 100%; object-fit: contain;" alt="轉換後圖">
+            </div>
+            <div id="info-converted" style="font-size: 0.875rem; font-weight: 600; color: var(--color-accent);">--</div>
+          </div>
+        </div>
+
+        <div class="tool-actions" style="margin-top: var(--space-xl);">
+          <button class="btn btn--primary" id="btn-download" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            下載轉換後的圖片
+          </button>
+          <button class="btn btn--secondary" id="btn-reupload" type="button">
+            選擇其他圖片
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="圖片加浮水印 — 本地為圖片添加自訂文字浮水印或全圖斜向平鋪防盜浮水印，自訂透明度、顏色與角度，100% 隱私不上傳。">
+  <title>圖片加浮水印 (Image Watermark) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">圖片加浮水印</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">圖片加浮水印</span>
+            <span class="tool-header__title-en">Image Watermark</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">為圖片添加專屬文字浮水印或全圖斜向平鋪防盜印，可自訂透明度、大小與方位，保障智財權。</p>
+      </header>
+
+      <!-- 上傳區 -->
+      <div class="tool-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept="image/*" style="display: none;">
+          <div class="file-drop-zone__icon">💧</div>
+          <div class="file-drop-zone__text">點擊選擇圖片，或直接拖曳圖片至此處</div>
+          <div class="file-drop-zone__hint">支援 JPG、PNG、WEBP 格式</div>
+        </div>
+      </div>
+
+      <!-- 設定面板 -->
+      <div class="tool-section" id="options-section" style="display: none;">
+        <div class="tool-section__title">浮水印參數設定</div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md);">
+          <!-- 浮水印文字 -->
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label class="form-label" for="wm-text">浮水印文字：</label>
+            <input type="text" class="form-input" id="wm-text" value="僅供 身分驗證 使用 · 請勿轉載">
+          </div>
+
+          <!-- 模式 -->
+          <div class="form-group">
+            <label class="form-label" for="wm-mode">排列樣式：</label>
+            <select class="form-select" id="wm-mode">
+              <option value="tile" selected>全圖斜向平鋪 (最佳防盜防偽)</option>
+              <option value="bottom-right">右下角放置</option>
+              <option value="bottom-left">左下角放置</option>
+              <option value="center">畫面中央放置</option>
+              <option value="top-right">右上角放置</option>
+            </select>
+          </div>
+
+          <!-- 透明度 -->
+          <div class="form-group">
+            <label class="form-label" for="wm-opacity">透明度：<span id="label-opacity" style="color:var(--color-accent);font-weight:700;">30%</span></label>
+            <input type="range" class="form-range" id="wm-opacity" min="5" max="90" value="30">
+          </div>
+
+          <!-- 文字顏色 -->
+          <div class="form-group">
+            <label class="form-label" for="wm-color">字體顏色：</label>
+            <select class="form-select" id="wm-color">
+              <option value="#ffffff" selected>純白色 (適合暗色背景)</option>
+              <option value="#000000">純黑色 (適合亮色背景)</option>
+              <option value="#ef4444">警告紅色</option>
+              <option value="#3b82f6">標記藍色</option>
+            </select>
+          </div>
+
+          <!-- 字體大小 -->
+          <div class="form-group">
+            <label class="form-label" for="wm-size">字體相對比例：</label>
+            <select class="form-select" id="wm-size">
+              <option value="0.03">小字型 (適中)</option>
+              <option value="0.045" selected>標準大小</option>
+              <option value="0.065">大字型</option>
+              <option value="0.09">特大顯眼</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 預覽與下載 -->
+      <div class="tool-section" id="preview-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title">效果即時預覽</div>
+        </div>
+
+        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center;">
+          <div style="max-height: 480px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto;">
+            <canvas id="wm-canvas" style="max-width: 100%; max-height: 460px; object-fit: contain; box-shadow: var(--shadow-sm); border-radius: var(--radius-sm);"></canvas>
+          </div>
+        </div>
+
+        <div class="tool-actions" style="margin-top: var(--space-xl);">
+          <button class="btn btn--primary btn--lg" id="btn-download-wm" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            下載已添加浮水印的圖片
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

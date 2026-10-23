@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="期末及格與目標成績倒推計算器 — 結合平時成績、期中考成績與期末考權重，精確試算期末考最低需考幾分才能及格或拿 A。Qiyen Toolbox。">
+  <title>期末及格與目標成績試算器 (Final Grade Calculator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">期末及格與目標成績試算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 14 14"></polyline>
+              <path d="M16 16l4 4"></path>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">期末及格與目標成績試算器</span>
+            <span class="tool-header__title-en">Final Grade Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">期末考到底要考幾分才能及格或拿 A？輸入平時、期中成績與期末權重，自動倒推期末所需分數。</p>
+      </header>
+
+      <!-- 設定學期目標 -->
+      <div class="tool-section">
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+            <label class="form-label" for="target-grade" style="margin: 0; font-weight: 700;">學期目標總成績：</label>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn--xs btn--ghost btn-target-preset" data-val="60">及格標準 (60分)</button>
+              <button class="btn btn--xs btn--ghost btn-target-preset" data-val="70">良好 (70分)</button>
+              <button class="btn btn--xs btn--ghost btn-target-preset" data-val="80">前段 (80分)</button>
+              <button class="btn btn--xs btn--ghost btn-target-preset" data-val="85">力爭拿 A (85分)</button>
+            </div>
+          </div>
+          <input type="number" class="form-input" id="target-grade" value="60" min="0" max="100" step="1" style="font-size: 1.25rem; font-weight: 800; color: var(--color-accent);">
+        </div>
+
+        <h3 style="font-size: 0.9375rem; font-weight: 700; margin: var(--space-md) 0 var(--space-sm); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+          各階段成績與比重設定
+        </h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+          
+          <!-- 1. 平時成績 -->
+          <div style="background: var(--color-surface); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <label class="form-label" style="font-weight: 700;">① 平時成績（出席/作業/小考）</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">得分 (0~100)</span>
+                <input type="number" class="form-input" id="regular-score" value="80" min="0" max="100" step="1" style="font-weight: 700;">
+              </div>
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">權重 (%)</span>
+                <input type="number" class="form-input" id="regular-weight" value="30" min="0" max="100" step="1" style="font-weight: 700;">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. 期中考成績 -->
+          <div style="background: var(--color-surface); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <label class="form-label" style="font-weight: 700; color: var(--color-accent);">② 期中考成績 (Midterm)</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">得分 (0~100)</span>
+                <input type="number" class="form-input" id="midterm-score" value="50" min="0" max="100" step="1" style="font-weight: 700;">
+              </div>
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">權重 (%)</span>
+                <input type="number" class="form-input" id="midterm-weight" value="30" min="0" max="100" step="1" style="font-weight: 700;">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. 期末考權重 -->
+          <div style="background: var(--color-surface); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <label class="form-label" style="font-weight: 700; color: var(--color-warning);">③ 期末考 / 專案 (Final)</label>
+            <div style="margin-top: 6px;">
+              <span style="font-size: 0.75rem; color: var(--color-text-secondary);">所佔權重 (%)</span>
+              <input type="number" class="form-input" id="final-weight" value="40" min="1" max="100" step="1" style="font-weight: 700;">
+            </div>
+            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 6px;">
+              權重合計：<strong id="total-weight-indicator" style="color: var(--color-success);">100%</strong>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 計算結果卡片 -->
+      <div class="tool-section">
+        <div style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(168,85,247,0.08) 100%); border: 2px solid var(--color-accent); border-radius: var(--radius-lg); padding: var(--space-lg);">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
+            <div>
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary); text-transform: uppercase;">期末考最低需考分數 (Needed on Final)</span>
+              <div id="needed-score-display" style="font-size: 3.5rem; font-weight: 900; color: var(--color-accent); line-height: 1.1;">
+                52.5 分
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary);">達成難度分析</span>
+              <div id="difficulty-status" style="font-size: 1.25rem; font-weight: 800; color: var(--color-success);">
+                穩健努力可達成
+              </div>
+            </div>
+          </div>
+
+          <!-- 明細數據條 -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-md); border-top: 1px dashed var(--color-border); padding-top: var(--space-md); margin-bottom: var(--space-md); font-size: 0.875rem;">
+            <div>
+              <span style="color: var(--color-text-secondary);">平時貢獻分：</span>
+              <strong id="regular-contrib" style="color: var(--color-text-primary); margin-left: 4px;">24.0 分</strong>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">期中貢獻分：</span>
+              <strong id="midterm-contrib" style="color: var(--color-text-primary); margin-left: 4px;">15.0 分</strong>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">目前累計已得分：</span>
+              <strong id="current-total-contrib" style="color: var(--color-accent); margin-left: 4px;">39.0 分</strong>
+            </div>
+          </div>
+
+          <div id="advice-box" style="border-top: 1px dashed var(--color-border); padding-top: var(--space-md); font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.6;">
+            <!-- 評語與策略 -->
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

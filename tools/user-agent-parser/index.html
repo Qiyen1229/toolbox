@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="User-Agent Parser — 本地瀏覽器 User-Agent 即時解析器，自動識別瀏覽器名稱、作業系統、渲染引擎、裝置類型與 CPU 架構。Qiyen Toolbox。">
+  <title>User-Agent 解析器 (User-Agent Parser) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">User-Agent 解析器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">User-Agent 解析器</span>
+            <span class="tool-header__title-en">User-Agent Parser</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">自動檢測或手動貼上 User-Agent 字串，精準剖析瀏覽器版本、作業系統、核心與裝置資訊。</p>
+      </header>
+
+      <!-- UA 輸入區 -->
+      <div class="tool-section">
+        <div class="tool-section__header">
+          <div class="tool-section__title">User-Agent 字串</div>
+          <div style="display: flex; gap: var(--space-xs);">
+            <button class="btn btn--sm btn--secondary" id="btn-use-current" type="button">自動載入當前瀏覽器 UA</button>
+            <button class="btn btn--sm btn--ghost" id="btn-demo-iphone" type="button">iPhone 範例</button>
+          </div>
+        </div>
+        <textarea class="form-input" id="ua-input" rows="3" placeholder="請在此貼上 User-Agent..." style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.875rem;"></textarea>
+      </div>
+
+      <!-- 解析結果卡片展示 -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-md); margin-top: var(--space-lg);">
+        <div class="tool-card" style="padding: var(--space-md); cursor: default;">
+          <div style="font-size: 0.75rem; color: var(--color-text-tertiary); font-weight: 600;">瀏覽器 (Browser)</div>
+          <div id="res-browser" style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent); margin-top: 4px;">-</div>
+          <div id="res-browser-ver" style="font-size: 0.8125rem; color: var(--color-text-secondary); font-family: var(--font-mono, monospace);">-</div>
+        </div>
+
+        <div class="tool-card" style="padding: var(--space-md); cursor: default;">
+          <div style="font-size: 0.75rem; color: var(--color-text-tertiary); font-weight: 600;">作業系統 (OS)</div>
+          <div id="res-os" style="font-size: 1.25rem; font-weight: 700; color: var(--color-tech-cyan); margin-top: 4px;">-</div>
+          <div id="res-os-ver" style="font-size: 0.8125rem; color: var(--color-text-secondary); font-family: var(--font-mono, monospace);">-</div>
+        </div>
+
+        <div class="tool-card" style="padding: var(--space-md); cursor: default;">
+          <div style="font-size: 0.75rem; color: var(--color-text-tertiary); font-weight: 600;">排版引擎 (Engine)</div>
+          <div id="res-engine" style="font-size: 1.25rem; font-weight: 700; color: var(--color-tech-purple); margin-top: 4px;">-</div>
+        </div>
+
+        <div class="tool-card" style="padding: var(--space-md); cursor: default;">
+          <div style="font-size: 0.75rem; color: var(--color-text-tertiary); font-weight: 600;">裝置類型 (Device Type)</div>
+          <div id="res-device" style="font-size: 1.25rem; font-weight: 700; color: var(--color-success); margin-top: 4px;">-</div>
+        </div>
+      </div>
+
+      <!-- JSON 結構化資料 -->
+      <div class="tool-section" style="margin-top: var(--space-lg);">
+        <div class="tool-section__header">
+          <div class="tool-section__title">結構化 JSON 輸出</div>
+          <button class="btn btn--sm btn--secondary" id="btn-copy-json">複製 JSON</button>
+        </div>
+        <pre id="json-output" style="
+          background: var(--color-surface);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          padding: var(--space-md);
+          font-family: var(--font-mono, monospace);
+          font-size: 0.875rem;
+          color: var(--color-text-primary);
+        "></pre>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="QR Code Scanner — 線上 QR Code 掃描器，支援相機鏡頭即時辨識與圖片檔案上傳解碼，100% 本地安全解析。Qiyen Toolbox。">
+  <title>QR Code 掃描器 (QR Code Scanner) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">QR Code 掃描器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+              <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+              <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <line x1="7" y1="12" x2="17" y2="12"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">QR Code 掃描器</span>
+            <span class="tool-header__title-en">QR Code Scanner</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">使用裝置相機即時掃描或上傳 QR Code 圖片進行辨識，完全在瀏覽器本地解碼。</p>
+      </header>
+
+      <!-- 模式切換頁籤 -->
+      <div style="display: flex; gap: var(--space-xs); margin-bottom: var(--space-lg);" id="scan-tabs">
+        <button class="btn btn--sm btn--primary tab-btn" data-mode="camera">📷 相機掃描</button>
+        <button class="btn btn--sm btn--ghost tab-btn" data-mode="file">📁 圖片檔案辨識</button>
+      </div>
+
+      <!-- 1. 相機掃描區塊 -->
+      <div class="tool-section" id="section-camera" style="text-align: center;">
+        <div style="position: relative; max-width: 440px; margin: 0 auto; border-radius: var(--radius-lg); overflow: hidden; background: #000; box-shadow: var(--shadow-md);">
+          <!-- 影像元素 -->
+          <video id="camera-video" playsinline style="width: 100%; height: 320px; object-fit: cover; display: block;"></video>
+          <!-- 掃描框指示線 -->
+          <div id="scan-overlay" style="position: absolute; inset: 40px; border: 2px dashed rgba(255,255,255,0.7); border-radius: var(--radius-md); pointer-events: none; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 100%; height: 2px; background: var(--color-accent); box-shadow: 0 0 8px var(--color-accent); animation: pulse 1.5s infinite;"></div>
+          </div>
+          <!-- 隱藏的擷取 Canvas -->
+          <canvas id="camera-canvas" style="display: none;"></canvas>
+        </div>
+
+        <div style="display: flex; gap: var(--space-sm); justify-content: center; margin-top: var(--space-md); flex-wrap: wrap;">
+          <button class="btn btn--primary" id="btn-toggle-camera" type="button">
+            開啟相機
+          </button>
+          <button class="btn btn--secondary" id="btn-switch-camera" type="button" style="display: none;">
+            切換前後鏡頭
+          </button>
+        </div>
+        <div id="camera-status" style="font-size: 0.8125rem; color: var(--color-text-tertiary); margin-top: var(--space-sm);">
+          請點擊「開啟相機」並授權瀏覽器存取攝影機
+        </div>
+      </div>
+
+      <!-- 2. 圖片檔案上傳辨識區塊 -->
+      <div class="tool-section" id="section-file" style="display: none;">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept="image/*" style="display: none;">
+          <div class="file-drop-zone__icon">🔍</div>
+          <div class="file-drop-zone__text">點擊選取或拖曳含有 QR Code 的圖片至此處</div>
+          <div class="file-drop-zone__hint">支援 JPG、PNG、WEBP、GIF 等圖片檔案</div>
+        </div>
+      </div>
+
+      <!-- 掃描結果區塊 -->
+      <div class="tool-section" id="result-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title">辨識結果 (Decoded Result)</div>
+          <button class="btn btn--sm btn--secondary" id="btn-copy-result" type="button">複製內容</button>
+        </div>
+
+        <div style="
+          margin-top: var(--space-md);
+          padding: var(--space-md);
+          background: var(--color-surface);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          font-family: var(--font-mono, monospace);
+          font-size: 0.9375rem;
+          word-break: break-all;
+          white-space: pre-wrap;
+          line-height: 1.6;
+        " id="result-text"></div>
+
+        <div style="margin-top: var(--space-md); display: flex; gap: var(--space-sm);">
+          <a class="btn btn--primary" id="btn-open-link" href="#" target="_blank" rel="noopener noreferrer" style="display: none;">
+            開啟網址 ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- 歷史紀錄 -->
+      <div class="tool-section" id="history-section" style="display: none;">
+        <div class="tool-section__header">
+          <div class="tool-section__title">本次掃描紀錄</div>
+          <button class="btn btn--sm btn--ghost" id="btn-clear-history" type="button">清除紀錄</button>
+        </div>
+        <div id="history-list" style="display: flex; flex-direction: column; gap: var(--space-xs); margin-top: var(--space-sm);"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <!-- 載入 jsQR 本地庫 -->
+  <script src="../../libs/jsQR.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

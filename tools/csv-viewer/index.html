@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CSV 查看器 — 本地解析 CSV 檔案為互動式資料表格，支援欄位即時排序、關鍵字篩選搜尋、分頁檢視與資料匯出。Qiyen Toolbox。">
+  <title>CSV 查看器 (CSV Viewer) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">CSV 查看器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3h18v18H3z"/>
+              <path d="M3 9h18"/>
+              <path d="M3 15h18"/>
+              <path d="M9 3v18"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">CSV 查看器</span>
+            <span class="tool-header__title-en">CSV Viewer & Table</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">將 CSV 檔案或文字轉為互動式表格，支援欄位排序、即時搜尋過濾、分頁與匯出。</p>
+      </header>
+
+      <!-- 上傳與貼上區 -->
+      <div class="tool-section">
+        <div class="file-drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept=".csv,text/csv,text/plain" style="display: none;">
+          <div class="file-drop-zone__icon">📊</div>
+          <div class="file-drop-zone__text">點擊選擇 CSV 檔案，或將檔案拖曳至此處</div>
+          <div class="file-drop-zone__hint">也可以點擊下方載入範例或手動貼上 CSV 文字</div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md); flex-wrap: wrap; gap: var(--space-xs);">
+          <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例 CSV</button>
+          <button class="btn btn--sm btn--secondary" id="btn-toggle-raw" type="button">切換手動貼上輸入框</button>
+        </div>
+
+        <div id="raw-input-wrapper" style="display: none; margin-top: var(--space-md);">
+          <textarea class="form-textarea" id="raw-csv-input" rows="6" placeholder="請在此貼上逗號或 Tab 分隔的 CSV 內容…"></textarea>
+          <button class="btn btn--primary btn--sm" id="btn-parse-raw" type="button" style="margin-top: 8px;">解析表格</button>
+        </div>
+      </div>
+
+      <!-- 表格展示區 -->
+      <div class="tool-section" id="table-section" style="display: none;">
+        <!-- 工具列：搜尋與分頁設定 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div style="display: flex; align-items: center; gap: var(--space-sm); flex: 1; min-width: 240px;">
+            <input type="text" class="form-input" id="search-filter" placeholder="搜尋表格內容…" style="max-width: 320px;">
+            <span id="stats-badge" style="font-size: 0.8125rem; color: var(--color-text-tertiary); white-space: nowrap;">-- 筆資料</span>
+          </div>
+
+          <div style="display: flex; gap: var(--space-sm); align-items: center;">
+            <label class="form-label" for="page-size-select" style="margin: 0; font-size: 0.8125rem;">每頁顯示：</label>
+            <select class="form-select" id="page-size-select" style="width: auto; padding: 4px 10px; font-size: 0.8125rem;">
+              <option value="10">10 筆</option>
+              <option value="25" selected>25 筆</option>
+              <option value="50">50 筆</option>
+              <option value="1000">全部</option>
+            </select>
+            <button class="btn btn--sm btn--secondary" id="btn-export-json" type="button">轉為 JSON</button>
+          </div>
+        </div>
+
+        <!-- 資料表格 -->
+        <div style="overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); max-height: 520px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+            <thead id="table-head" style="position: sticky; top: 0; background: var(--color-surface); z-index: 2; border-bottom: 2px solid var(--color-border);">
+              <!-- 動態渲染標題列 -->
+            </thead>
+            <tbody id="table-body">
+              <!-- 動態渲染資料列 -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 分頁控制列 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md); font-size: 0.875rem;">
+          <div id="page-info" style="color: var(--color-text-secondary);">頁次：1 / 1</div>
+          <div style="display: flex; gap: var(--space-xs);">
+            <button class="btn btn--sm btn--secondary" id="btn-prev-page">上一頁</button>
+            <button class="btn btn--sm btn--secondary" id="btn-next-page">下一頁</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

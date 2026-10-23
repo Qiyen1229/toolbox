@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Text Diff — 文字比對差異工具，支援逐行與逐字比對、並排與合併檢視，高亮顯示新增與刪除內容。Qiyen Toolbox 線上工具。">
+  <title>Text Diff — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Text Diff</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="8" height="18" rx="1"/>
+              <rect x="14" y="3" width="8" height="18" rx="1"/>
+              <line x1="6" y1="8" x2="6" y2="8.01"/>
+              <line x1="6" y1="12" x2="6" y2="12.01"/>
+              <line x1="18" y1="8" x2="18" y2="8.01"/>
+              <line x1="18" y1="12" x2="18" y2="12.01"/>
+            </svg>
+          </div>
+          Text Diff
+        </h1>
+        <p class="tool-header__description">比對兩段文字或程式碼差異，清楚標記新增、刪除與未修改之處。</p>
+      </header>
+
+      <!-- 雙欄輸入區 -->
+      <div class="tool-split">
+        <!-- 原始版本 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">原始文字 (Original)</div>
+            <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例</button>
+          </div>
+          <textarea
+            class="form-textarea"
+            id="diff-orig"
+            placeholder="請在此貼上原始文字…"
+            rows="10"
+          ></textarea>
+        </div>
+
+        <!-- 修改版本 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">修改後文字 (Modified)</div>
+            <button class="btn btn--sm btn--ghost" id="btn-swap" type="button">左右對調</button>
+          </div>
+          <textarea
+            class="form-textarea"
+            id="diff-mod"
+            placeholder="請在此貼上修改後的文字…"
+            rows="10"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- 比對操作與設定區 -->
+      <div class="tool-actions" style="margin-top: var(--space-lg); align-items: center; justify-content: space-between; flex-wrap: wrap;">
+        <div style="display: flex; gap: var(--space-sm); align-items: center;">
+          <button class="btn btn--primary" id="btn-compare" type="button">
+            開始比對 (Compare)
+          </button>
+          <button class="btn btn--ghost" id="btn-clear" type="button">
+            清除
+          </button>
+        </div>
+
+        <div style="display: flex; gap: var(--space-md); align-items: center; flex-wrap: wrap;">
+          <!-- 粒度模式 -->
+          <div class="tool-option" style="margin: 0;">
+            <span class="tool-option__label">比對方式：</span>
+            <select class="form-select" id="diff-mode" style="width: auto;">
+              <option value="line" selected>逐行比對 (Line)</option>
+              <option value="word">逐字比對 (Word)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 比對結果展示區 -->
+      <div class="tool-section" id="diff-result-section" style="display: none; margin-top: var(--space-xl);">
+        <div class="tool-section__header">
+          <div class="tool-section__title">比對結果</div>
+          <div id="diff-stats" style="display: flex; gap: var(--space-sm); font-size: 0.8125rem;">
+            <span id="badge-added" style="padding: 2px 8px; background: var(--color-success-light); color: var(--color-success); border-radius: var(--radius-full); font-weight: 700;">+0 新增</span>
+            <span id="badge-removed" style="padding: 2px 8px; background: var(--color-error-light); color: var(--color-error); border-radius: var(--radius-full); font-weight: 700;">-0 刪除</span>
+          </div>
+        </div>
+
+        <!-- 結果渲染框 -->
+        <div id="diff-output" style="
+          background: var(--color-surface);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          font-family: var(--font-mono, monospace);
+          font-size: 0.875rem;
+          line-height: 1.6;
+          overflow-x: auto;
+          margin-top: var(--space-md);
+        "></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

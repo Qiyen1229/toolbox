@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Extract IP Addresses (提取 IP 位址) — 批量萃取日誌、文章或伺服器記錄中的 IPv4 與 IPv6 位址，支援公網/內網分類與數值排序。Qiyen Toolbox。">
+  <title>提取 IP 位址 (Extract IP Addresses) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">提取 IP 位址</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+              <line x1="6" y1="6" x2="6.01" y2="6"/>
+              <line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">提取 IP 位址</span>
+            <span class="tool-header__title-en">Extract IP Addresses</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">從伺服器日誌或文章中萃取 IPv4 與 IPv6 位址，支援公網/私有內網分類過濾與去重。</p>
+      </header>
+
+      <!-- 設定選項 -->
+      <div class="tool-section">
+        <div class="tool-section__title">提取過濾選項</div>
+        <div style="display: flex; gap: var(--space-lg); flex-wrap: wrap; align-items: center;">
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-unique" checked>
+            <span>排除重複 IP (Deduplicate)</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" id="opt-sort" checked>
+            <span>依數值大小排序</span>
+          </label>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 0.8125rem; color: var(--color-text-secondary);">IP 範圍篩選：</span>
+            <select class="form-select" id="filter-type" style="width: auto; padding: 4px 10px; font-size: 0.8125rem;">
+              <option value="all" selected>全部 IP (公網 + 內網)</option>
+              <option value="public">僅保留公網 IP (Public)</option>
+              <option value="private">僅保留私有內網 IP (192.168/10.x)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 雙欄佈局 -->
+      <div class="tool-split">
+        <!-- 輸入文字 -->
+        <div class="tool-section" style="margin-bottom: 0;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">原始日誌或文字</div>
+            <button class="btn btn--sm btn--ghost" id="btn-sample" type="button">載入範例</button>
+          </div>
+          <textarea class="form-textarea" id="input-raw" rows="12" placeholder="請在此貼上包含 IP 的文字或伺服器 Log…"></textarea>
+          <div style="display: flex; justify-content: flex-end; margin-top: var(--space-xs);">
+            <button class="btn btn--sm btn--ghost" id="btn-clear" type="button">清空</button>
+          </div>
+        </div>
+
+        <!-- 提取結果 -->
+        <div class="tool-section" style="margin-bottom: 0; display: flex; flex-direction: column;">
+          <div class="tool-section__header">
+            <div class="tool-section__title">提取結果</div>
+            <span id="stats-badge" style="font-size: 0.8125rem; color: var(--color-accent); font-weight: 700;">共 0 個 IP</span>
+          </div>
+          <textarea class="form-textarea" id="output-ips" rows="12" readonly style="flex: 1; font-family: var(--font-mono, monospace); font-size: 0.8125rem;" placeholder="提取出的 IP 位址將顯示於此…"></textarea>
+          <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+            <button class="btn btn--sm btn--secondary" id="btn-copy" type="button">一鍵複製</button>
+            <button class="btn btn--sm btn--ghost" id="btn-download" type="button">下載 .txt</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

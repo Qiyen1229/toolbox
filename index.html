@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Qiyen Toolbox — 集合各種實用小工具的入口網站，QR Code、JSON 格式化、密碼產生器、圖片壓縮等，全部在瀏覽器本地執行。">
+    <title>Qiyen Toolbox — 個人工具箱</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+    <!-- PWA & iOS 主畫面支援 -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0b1120">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Qiyen Toolbox">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+    <!-- 樣式 -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+
+    <!-- NOTE: 在 <head> 載入 theme.js 以儘早套用主題，避免畫面閃爍 -->
+    <script src="js/theme.js"></script>
+</head>
+
+<body>
+
+    <!-- ====== Navbar ====== -->
+    <nav class="navbar" role="navigation" aria-label="主導覽列">
+        <div class="navbar__inner">
+
+            <!-- Logo -->
+            <a href="index.html" class="navbar__logo" aria-label="Qiyen Toolbox 首頁">
+                <div class="navbar__logo-icon">Q</div>
+                <span>Qiyen Toolbox</span>
+            </a>
+
+            <!-- 搜尋框 -->
+            <div class="navbar__search" id="search-wrapper">
+                <svg class="navbar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="text" class="navbar__search-input" id="search-input" placeholder="搜尋工具… (按 / 快速搜尋)"
+                    autocomplete="off" aria-label="搜尋工具">
+            </div>
+
+            <!-- 右側按鈕 -->
+            <div class="navbar__actions">
+                <!-- 手機版搜尋切換按鈕 -->
+                <button class="icon-btn mobile-menu-btn" id="mobile-search-toggle" aria-label="開啟搜尋">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+
+                <!-- 開發者模式切換 -->
+                <button class="dev-mode-btn" id="dev-mode-toggle" aria-label="切換開發者模式"
+                    title="開啟/關閉開發者模式 (Developer Mode)">
+                    <span class="dev-mode-btn__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6" />
+                            <polyline points="8 6 2 12 8 18" />
+                        </svg>
+                    </span>
+                    <span>Developer</span>
+                    <span class="dev-mode-btn__dot" aria-hidden="true"></span>
+                </button>
+
+                <!-- 主題切換 -->
+                <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式">
+                    <!-- icon 由 theme.js 動態填入 -->
+                </button>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- ====== 主內容區 ====== -->
+    <main style="padding-top: calc(var(--navbar-height) + var(--space-lg));">
+        <div class="container">
+
+            <!-- Hero 區塊 -->
+            <section class="hero-section" id="hero-section" aria-label="網站介紹">
+                <div class="hero-spotlight" id="hero-spotlight" aria-hidden="true"></div>
+                <div class="hero-content" id="hero-content">
+                    <div class="hero-badge">
+                        <span class="hero-badge__dot" aria-hidden="true"></span>
+                        <span>本地執行 · 隱私無虞 · 即開即用</span>
+                    </div>
+                    <h1 class="hero-title" id="hero-title">
+                        <span class="hero-icon" id="hero-icon" aria-hidden="true">🧰</span>
+                        <span class="hero-title__text">個人工具箱</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        集結 <span class="hero-counter" id="tool-count">52</span> 款實用小工具，全部在瀏覽器本地極速執行，不上傳任何資料
+                    </p>
+                </div>
+            </section>
+
+            <!-- 分類標籤列 -->
+            <div class="category-bar" id="category-bar" role="tablist" aria-label="工具分類">
+                <!-- 由 app.js 動態渲染 -->
+            </div>
+
+            <!-- 最近使用 -->
+            <section id="recent-section" style="display: none; margin-bottom: var(--space-lg);">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-title__icon">🕐</span>
+                        最近使用
+                    </h2>
+                </div>
+                <div class="recent-tools" id="recent-tools">
+                    <!-- 由 app.js 動態渲染 -->
+                </div>
+            </section>
+
+            <!-- 工具卡片 Grid -->
+            <section>
+                <div class="tools-grid" id="tools-grid">
+                    <!-- 由 app.js 動態渲染 -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ====== Footer ====== -->
+    <footer class="footer">
+        <p>© 2026 Qiyen Toolbox · 所有工具皆在瀏覽器本地執行</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/tools-registry.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- PWA Service Worker 註冊 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch((err) => {
+                    console.log('[SW] Registration skipped or failed:', err);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

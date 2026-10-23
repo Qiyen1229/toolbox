@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="時薪加班費與薪水計算器 — 依時薪與多段加班加成倍率（1.34x、1.67x、2x）精確試算實領工資。Qiyen Toolbox。">
+  <title>薪水計算器 (Wage Calculator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">薪水計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">時薪與加班薪水計算器</span>
+            <span class="tool-header__title-en">Wage & Overtime Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">支援常規時薪計算與多段加成倍率加班費（1.34倍、1.67倍、雙倍假日工時），自動彙整實領薪資。</p>
+      </header>
+
+      <!-- 輸入表單區塊 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+          
+          <div class="form-group">
+            <label class="form-label" for="base-wage">基本時薪 (NT$/小時)：</label>
+            <input type="number" class="form-input" id="base-wage" value="190" min="0" step="1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="base-hours">常規工時 (小時)：</label>
+            <input type="number" class="form-input" id="base-hours" value="160" min="0" step="0.5">
+          </div>
+
+        </div>
+
+        <h3 style="font-size: 1rem; font-weight: 700; margin: var(--space-lg) 0 var(--space-sm); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+          加班工時與倍率設定
+        </h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md);">
+          
+          <!-- 加班段落 1 -->
+          <div style="background: var(--color-surface); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <label class="form-label" style="font-weight: 700;">加班 1（前 2 小時勞基法 4/3 倍）</label>
+            <div style="display: flex; gap: var(--space-sm); align-items: center; margin-top: 6px;">
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">工時 (hr)</span>
+                <input type="number" class="form-input" id="ot1-hours" value="10" min="0" step="0.5">
+              </div>
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">倍率</span>
+                <input type="number" class="form-input" id="ot1-rate" value="1.34" min="1" step="0.01">
+              </div>
+            </div>
+          </div>
+
+          <!-- 加班段落 2 -->
+          <div style="background: var(--color-surface); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <label class="form-label" style="font-weight: 700;">加班 2（第 3 小時起 5/3 倍）</label>
+            <div style="display: flex; gap: var(--space-sm); align-items: center; margin-top: 6px;">
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">工時 (hr)</span>
+                <input type="number" class="form-input" id="ot2-hours" value="4" min="0" step="0.5">
+              </div>
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">倍率</span>
+                <input type="number" class="form-input" id="ot2-rate" value="1.67" min="1" step="0.01">
+              </div>
+            </div>
+          </div>
+
+          <!-- 特殊加班 3 -->
+          <div style="background: var(--color-surface); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <label class="form-label" style="font-weight: 700;">特殊 / 國定假日加班（雙倍）</label>
+            <div style="display: flex; gap: var(--space-sm); align-items: center; margin-top: 6px;">
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">工時 (hr)</span>
+                <input type="number" class="form-input" id="ot3-hours" value="8" min="0" step="0.5">
+              </div>
+              <div>
+                <span style="font-size: 0.75rem; color: var(--color-text-secondary);">倍率</span>
+                <input type="number" class="form-input" id="ot3-rate" value="2.00" min="1" step="0.01">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 style="font-size: 1rem; font-weight: 700; margin: var(--space-lg) 0 var(--space-sm); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+          津貼與扣除項
+        </h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label" for="bonus-amount">額外補貼 / 獎金 (NT$)：</label>
+            <input type="number" class="form-input" id="bonus-amount" value="2000" min="0" step="100">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="deduct-amount">應扣款項（勞健保/請假）(NT$)：</label>
+            <input type="number" class="form-input" id="deduct-amount" value="1050" min="0" step="50">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 計算結果結算卡 -->
+      <div class="tool-section">
+        <div style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(168,85,247,0.08) 100%); border: 2px solid var(--color-accent); border-radius: var(--radius-lg); padding: var(--space-lg);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
+            <div>
+              <span style="font-size: 0.875rem; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">預估實發薪資 (Net Pay)</span>
+              <div id="net-salary" style="font-size: 2.25rem; font-weight: 800; color: var(--color-accent); line-height: 1.2;">
+                NT$ 0
+              </div>
+            </div>
+            <button class="btn btn--secondary" id="btn-copy-summary">複製薪資明細</button>
+          </div>
+
+          <!-- 明細清單 -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-md); border-top: 1px dashed var(--color-border); padding-top: var(--space-md); font-size: 0.875rem;">
+            <div>
+              <span style="color: var(--color-text-secondary);">常規工資：</span>
+              <div id="summary-base" style="font-weight: 700; margin-top: 2px;">NT$ 0</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">總加班費：</span>
+              <div id="summary-ot" style="font-weight: 700; margin-top: 2px; color: var(--color-warning);">NT$ 0</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">總工時：</span>
+              <div id="summary-hours" style="font-weight: 700; margin-top: 2px;">0 小時</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">應發總額 (Gross)：</span>
+              <div id="summary-gross" style="font-weight: 700; margin-top: 2px;">NT$ 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

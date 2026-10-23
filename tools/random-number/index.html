@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="隨機數字產生器 — 支援自訂範圍、生成數量、不重複抽取、排序與一鍵複製。Qiyen Toolbox。">
+  <title>隨機數字產生器 (Random Number) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">隨機數字產生器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <circle cx="8" cy="8" r="1.5"></circle>
+              <circle cx="16" cy="16" r="1.5"></circle>
+              <circle cx="12" cy="12" r="1.5"></circle>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">隨機數字產生器</span>
+            <span class="tool-header__title-en">Random Number Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">真隨機密碼學亂數（Crypto API），支援範圍設定、多個生成、排除重複與排序。</p>
+      </header>
+
+      <!-- 設定區塊 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-md);">
+          
+          <div class="form-group">
+            <label class="form-label" for="rand-min">最小值 (Min)：</label>
+            <input type="number" class="form-input" id="rand-min" value="1" step="1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rand-max">最大值 (Max)：</label>
+            <input type="number" class="form-input" id="rand-max" value="100" step="1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rand-count">生成數量：</label>
+            <input type="number" class="form-input" id="rand-count" value="5" min="1" max="1000" step="1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rand-sort">結果排序：</label>
+            <select class="form-input" id="rand-sort">
+              <option value="none">不排序（原始隨機）</option>
+              <option value="asc">由小到大 (升冪)</option>
+              <option value="desc">由大到小 (降冪)</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div style="display: flex; gap: var(--space-lg); align-items: center; margin-top: var(--space-md); flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="rand-unique" checked>
+            <span style="font-size: 0.875rem;">數字不重複 (Unique)</span>
+          </label>
+          <div style="flex: 1;"></div>
+          <button class="btn btn--primary" id="btn-generate" style="padding: 10px 28px; font-size: 1rem;">
+            🎲 立即隨機產生
+          </button>
+        </div>
+      </div>
+
+      <!-- 結果展示區 -->
+      <div class="tool-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">抽籤結果清單</h3>
+          <button class="btn btn--sm btn--secondary" id="btn-copy">複製數字清單</button>
+        </div>
+
+        <div id="results-container" style="display: flex; gap: 10px; flex-wrap: wrap; min-height: 80px; align-items: center; padding: var(--space-md); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+          <!-- 數字氣泡 -->
+        </div>
+
+        <!-- 統計數據 -->
+        <div id="stats-bar" style="margin-top: var(--space-sm); font-size: 0.8125rem; color: var(--color-text-secondary); display: flex; gap: var(--space-lg);">
+          <span>總數：<strong id="stat-count" style="color: var(--color-text-primary);">0</strong></span>
+          <span>總和：<strong id="stat-sum" style="color: var(--color-text-primary);">0</strong></span>
+          <span>平均值：<strong id="stat-avg" style="color: var(--color-text-primary);">0</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

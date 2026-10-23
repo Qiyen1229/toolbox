@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Regex Tester — 線上正規表達式即時比對測試器，支援高亮捕獲、群組分析、替換預覽與常用語法範本。Qiyen Toolbox。">
+  <title>正規表達式測試器 (Regex Tester) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">正規表達式測試器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m5 16 6-6M5 10l6 6M14 6l3 3-3 3M19 6v12"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">正規表達式測試器</span>
+            <span class="tool-header__title-en">Regex Tester</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">即時測試 JavaScript 正規表達式，視覺化匹配高亮、群組解析與替換預覽。</p>
+      </header>
+
+      <!-- 常用正規式快捷範本 -->
+      <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-bottom: var(--space-md);">
+        <span style="font-size: 0.8125rem; color: var(--color-text-tertiary); align-self: center; margin-right: 4px;">常用範本：</span>
+        <button class="btn btn--sm btn--ghost regex-preset" data-pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" data-flags="g">Email</button>
+        <button class="btn btn--sm btn--ghost regex-preset" data-pattern="https?:\/\/[^\s/$.?#].[^\s]*" data-flags="gi">網址 URL</button>
+        <button class="btn btn--sm btn--ghost regex-preset" data-pattern="(?:\d{1,3}\.){3}\d{1,3}" data-flags="g">IPv4 位址</button>
+        <button class="btn btn--sm btn--ghost regex-preset" data-pattern="09\d{2}-?\d{3}-?\d{3}" data-flags="g">台灣手機號碼</button>
+        <button class="btn btn--sm btn--ghost regex-preset" data-pattern="[A-Z][12]\d{8}" data-flags="g">台灣身分證</button>
+      </div>
+
+      <!-- 正規式輸入列 -->
+      <div class="tool-section">
+        <div style="display: flex; gap: var(--space-sm); align-items: center;">
+          <span style="font-size: 1.25rem; font-family: var(--font-mono, monospace); color: var(--color-text-tertiary);">/</span>
+          <input type="text" class="form-input" id="regex-pattern" placeholder="請輸入正規表達式，如 ([a-z]+)@([a-z]+)" style="flex: 1; font-family: var(--font-mono, monospace); font-size: 1rem;">
+          <span style="font-size: 1.25rem; font-family: var(--font-mono, monospace); color: var(--color-text-tertiary);">/</span>
+          <input type="text" class="form-input" id="regex-flags" value="gm" placeholder="flags" style="width: 75px; font-family: var(--font-mono, monospace); text-align: center;">
+        </div>
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-xs); font-size: 0.75rem; color: var(--color-text-tertiary);">
+          <span>g (全域)</span>
+          <span>i (不區分大小寫)</span>
+          <span>m (多行模式)</span>
+          <span>s (點號比對換行)</span>
+          <span>u (Unicode)</span>
+        </div>
+      </div>
+
+      <!-- 測試字串輸入與比對高亮 -->
+      <div class="tool-split">
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title">測試文字 (Test String)</span>
+          </div>
+          <div class="tool-panel__body">
+            <textarea class="form-input" id="test-string" rows="8" placeholder="在此輸入要進行測試的比對文字..." style="width: 100%; font-family: var(--font-mono, monospace); font-size: 0.875rem;"></textarea>
+          </div>
+        </div>
+
+        <div class="tool-panel">
+          <div class="tool-panel__header">
+            <span class="tool-panel__title">匹配結果 (<span id="match-count">0 次匹配</span>)</span>
+          </div>
+          <div class="tool-panel__body">
+            <div id="match-highlight" style="
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: var(--radius-sm);
+              padding: var(--space-sm);
+              min-height: 180px;
+              max-height: 280px;
+              overflow: auto;
+              font-family: var(--font-mono, monospace);
+              font-size: 0.875rem;
+              line-height: 1.6;
+              white-space: pre-wrap;
+              word-break: break-all;
+            "></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 替換預覽區 -->
+      <div class="tool-section" style="margin-top: var(--space-lg);">
+        <div class="tool-section__title">替換功能 (Regex Replace)</div>
+        <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-xs);">
+          <input type="text" class="form-input" id="replace-input" placeholder="替換文字（支援 $1, $2 捕獲群組引用）" style="flex: 1; font-family: var(--font-mono, monospace); font-size: 0.875rem;">
+          <button class="btn btn--secondary" id="btn-copy-replaced" type="button">複製替換結果</button>
+        </div>
+        <pre id="replace-preview" style="
+          background: var(--color-surface);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-md);
+          padding: var(--space-md);
+          margin-top: var(--space-sm);
+          font-family: var(--font-mono, monospace);
+          font-size: 0.875rem;
+          white-space: pre-wrap;
+          word-break: break-all;
+        "></pre>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

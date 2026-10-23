@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Text Counter — 即時計算字數、字元數、單字數與行數。Qiyen Toolbox 線上工具。">
+  <title>字數統計工具 (Text Counter) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">字數統計工具</span>
+      </div>
+
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 7V3h14v4"/><path d="M5 21V17h14v4"/><rect x="2" y="7" width="20" height="10" rx="2"/>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">字數統計工具</span>
+            <span class="tool-header__title-en">Text Counter</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">即時計算字數、字元數、單字數與行數。貼上或輸入文字即可看到統計結果。</p>
+      </header>
+
+      <!-- 統計數據卡片 -->
+      <div class="stats-grid" style="margin-bottom: var(--space-lg);">
+        <div class="stat-card">
+          <div class="stat-card__value" id="stat-chars">0</div>
+          <div class="stat-card__label">字元數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value" id="stat-chars-no-spaces">0</div>
+          <div class="stat-card__label">字元（不含空格）</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value" id="stat-words">0</div>
+          <div class="stat-card__label">單字數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value" id="stat-lines">0</div>
+          <div class="stat-card__label">行數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value" id="stat-sentences">0</div>
+          <div class="stat-card__label">句子數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value" id="stat-paragraphs">0</div>
+          <div class="stat-card__label">段落數</div>
+        </div>
+      </div>
+
+      <!-- 輸入區 -->
+      <div class="tool-section">
+        <div class="tool-section__title">文字輸入</div>
+        <textarea
+          class="form-textarea"
+          id="text-input"
+          placeholder="在此輸入或貼上文字，統計數據會即時更新..."
+          rows="12"
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <!-- 操作按鈕 -->
+      <div class="tool-actions">
+        <button class="btn btn--ghost" id="btn-clear" type="button">清除</button>
+        <button class="btn btn--ghost" id="btn-paste" type="button">📋 從剪貼簿貼上</button>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

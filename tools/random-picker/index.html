@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="隨機抽籤器 — 午餐吃什麼、抽獎名單抽取、抽後不放回與刺激開獎動畫。Qiyen Toolbox。">
+  <title>隨機抽籤器 (Random Picker) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">隨機抽籤器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">隨機抽籤與抽獎器</span>
+            <span class="tool-header__title-en">Random Picker</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">午餐吃什麼決定障礙？活動尾牙抽獎？自訂名單一鍵開獎，支援抽後不放回。</p>
+      </header>
+
+      <!-- 快捷範例組 -->
+      <div style="display: flex; gap: 8px; margin-bottom: var(--space-md); flex-wrap: wrap; align-items: center;">
+        <span style="font-size: 0.8125rem; color: var(--color-text-tertiary);">快速載入範本：</span>
+        <button class="btn btn--sm btn--ghost btn-preset-list" data-preset="lunch">🍲 午餐吃什麼</button>
+        <button class="btn btn--sm btn--ghost btn-preset-list" data-preset="activity">🎮 聚會活動大冒險</button>
+        <button class="btn btn--sm btn--ghost btn-preset-list" data-preset="yesno">⚖️ 是 / 否 / 也許</button>
+      </div>
+
+      <!-- 輸入區塊與控制 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-md);">
+          
+          <div class="form-group">
+            <label class="form-label" for="items-input">候選清單（每行一個選項）：</label>
+            <textarea class="form-input" id="items-input" rows="6" placeholder="請在此輸入候選項目，一行一個..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: var(--space-lg); align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.875rem;">一次抽取：</span>
+              <input type="number" class="form-input" id="pick-count" value="1" min="1" max="100" style="width: 70px;">
+              <span style="font-size: 0.875rem;">個</span>
+            </div>
+
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="no-replace">
+              <span style="font-size: 0.875rem;">抽後不放回（從候選清單中移除）</span>
+            </label>
+
+            <div style="flex: 1;"></div>
+
+            <button class="btn btn--primary" id="btn-spin" style="padding: 12px 36px; font-size: 1.125rem;">
+              🎰 開始抽籤！
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 開獎展示看版 -->
+      <div class="tool-section">
+        <div style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(168,85,247,0.08) 100%); border: 2px dashed var(--color-accent); border-radius: var(--radius-xl); padding: var(--space-2xl) var(--space-md); text-align: center; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          
+          <div style="font-size: 0.875rem; color: var(--color-text-secondary); margin-bottom: 8px; text-transform: uppercase;">
+            中獎結果 (Winner)
+          </div>
+
+          <div id="winner-display" style="font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 900; color: var(--color-accent); line-height: 1.2;">
+            點擊「開始抽籤」揭曉
+          </div>
+
+        </div>
+
+        <!-- 歷史中獎紀錄 -->
+        <div id="history-box" style="margin-top: var(--space-lg); display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 0.875rem; font-weight: 700;">本次抽獎歷史紀錄：</span>
+            <button class="btn btn--xs btn--ghost" id="btn-clear-history">清除紀錄</button>
+          </div>
+          <div id="history-list" style="font-size: 0.8125rem; color: var(--color-text-secondary); line-height: 1.6;"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

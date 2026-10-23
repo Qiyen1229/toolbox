@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="隨機分組器 — 班級報告、活動團隊自動破冰分組，支援指定組數或每組人數，自動指派隊長與一鍵複製。Qiyen Toolbox。">
+  <title>隨機分組器 (Random Team Generator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">隨機分組器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">隨機分組器</span>
+            <span class="tool-header__title-en">Random Team Generator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">課堂專案、黑客松與團康活動快速隨機組隊，支援固定組數或每組人數分流。</p>
+      </header>
+
+      <!-- 輸入名單與配置 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md);">
+          
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin: 0;" for="members-input">成員名單（一行一人）：</label>
+              <button class="btn btn--xs btn--ghost" id="btn-load-sample">載入示範名單</button>
+            </div>
+            <textarea class="form-input" id="members-input" rows="8" placeholder="小明&#10;小華&#10;大寶&#10;阿倫&#10;美美..."></textarea>
+          </div>
+
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="form-group">
+                <label class="form-label">分組規則模式：</label>
+                <div class="segmented-control" id="group-mode-select" style="margin-bottom: 12px;">
+                  <button class="segmented-control__item active" data-mode="by-groups">指定組數</button>
+                  <button class="segmented-control__item" data-mode="by-members">指定每組人數</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span id="group-val-label" style="font-size: 0.875rem;">分成幾組：</span>
+                  <input type="number" class="form-input" id="group-val" value="3" min="1" max="100" style="width: 100px; font-weight: 700;">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" id="assign-leader">
+                  <span style="font-size: 0.875rem;">每組自動隨機指派一位「組長 👑」</span>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn btn--primary" id="btn-generate-teams" style="padding: 12px 24px; font-size: 1rem; width: 100%; margin-top: var(--space-md);">
+              ⚡ 開始隨機分組
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 分組結果區塊 -->
+      <div class="tool-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 0.9375rem; font-weight: 700; margin: 0;">分組結果</h3>
+          <button class="btn btn--sm btn--secondary" id="btn-copy-teams">複製分組結果</button>
+        </div>
+
+        <div id="teams-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-md);">
+          <!-- 動態分組卡片 -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

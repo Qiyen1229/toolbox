@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <script>if (!location.pathname.endsWith("/") && !location.pathname.endsWith(".html")) { location.replace(location.pathname + "/" + location.search + location.hash); }</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BMI 身體質量指數計算器 — 依據台灣衛福部健康標準，試算體態指數、理想健康體重範圍與彩色評級條。Qiyen Toolbox。">
+  <title>BMI 計算器 (BMI Calculator) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">BMI 計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z">
+              </path>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">BMI 身體質量指數計算器</span>
+            <span class="tool-header__title-en">BMI Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">依據衛生福利部國民健康署標準，快速評估體位、理想體重目標與健康指南。</p>
+      </header>
+
+      <!-- 輸入區塊 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md);">
+
+          <div class="form-group">
+            <label class="form-label" for="height-input">身高 (cm)：</label>
+            <input type="number" class="form-input" id="height-input" value="175" min="50" max="250" step="0.5"
+              style="font-size: 1.125rem; font-weight: 700;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="weight-input">體重 (kg)：</label>
+            <input type="number" class="form-input" id="weight-input" value="68" min="20" max="300" step="0.5"
+              style="font-size: 1.125rem; font-weight: 700;">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 計算結果卡片 -->
+      <div class="tool-section">
+        <div
+          style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%); border: 2px solid var(--color-success); border-radius: var(--radius-lg); padding: var(--space-lg);">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
+            <div>
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary); text-transform: uppercase;">您的 BMI
+                指數</span>
+              <div id="bmi-val"
+                style="font-size: 3rem; font-weight: 900; color: var(--color-success); line-height: 1.1;">
+                22.2
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.8125rem; color: var(--color-text-secondary);">體位評定</span>
+              <div id="bmi-category" style="font-size: 1.5rem; font-weight: 800; color: var(--color-success);">
+                標準體重
+              </div>
+            </div>
+          </div>
+
+          <!-- 彩色評級指針條 -->
+          <div style="margin-bottom: var(--space-md);">
+            <div style="display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin-bottom: 6px;">
+              <div style="flex: 18.5; background: #38bdf8;" title="過輕 (<18.5)"></div>
+              <div style="flex: 5.5; background: #10b981;" title="正常 (18.5-24)"></div>
+              <div style="flex: 3; background: #f59e0b;" title="過重 (24-27)"></div>
+              <div style="flex: 8; background: #ef4444;" title="肥胖 (>=27)"></div>
+            </div>
+            <div
+              style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-text-secondary);">
+              <span>過輕 (&lt;18.5)</span>
+              <span>正常 (18.5-24)</span>
+              <span>過重 (24-27)</span>
+              <span>肥胖 (&ge;27)</span>
+            </div>
+          </div>
+
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); border-top: 1px dashed var(--color-border); padding-top: var(--space-md); font-size: 0.875rem;">
+            <div>
+              <span style="color: var(--color-text-secondary);">您的理想健康體重範圍：</span>
+              <div id="ideal-weight-range" style="font-weight: 700; color: var(--color-text-primary); margin-top: 2px;">
+                56.7 ~ 73.5 kg</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">衛福部健康建議：</span>
+              <div id="health-advice" style="color: var(--color-text-secondary); margin-top: 2px;">維持健康體態，持續保持均衡飲食與規律運動！
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

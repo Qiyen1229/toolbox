@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Markdown 線上即時筆記 — 支援本地 LocalStorage 自動存檔、雙欄即時渲染、字數統計與 .md 筆記下載。Qiyen Toolbox。">
+  <title>Markdown 筆記 (Markdown Notes) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container" style="max-width: 1200px;">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">Markdown 筆記</span>
+      </div>
+
+      <!-- 工具標題與狀態 -->
+      <header class="tool-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-md);">
+        <div>
+          <h1 class="tool-header__title">
+            <div class="tool-header__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </div>
+            <div class="tool-header__title-group">
+              <span class="tool-header__title-zh">Markdown 即時筆記</span>
+              <span class="tool-header__title-en">Markdown Notes</span>
+            </div>
+          </h1>
+          <p class="tool-header__description">輕量 Markdown 寫作與預覽，內容自動保存在瀏覽器 LocalStorage，防手殘防中斷。</p>
+        </div>
+        <div style="display: flex; gap: var(--space-xs); align-items: center;">
+          <span id="save-status" style="font-size: 0.8125rem; color: var(--color-success); margin-right: 8px;">● 已自動儲存</span>
+          <button class="btn btn--sm btn--secondary" id="btn-export-md">下載 .md</button>
+          <button class="btn btn--sm btn--ghost" id="btn-clear">清空筆記</button>
+        </div>
+      </header>
+
+      <!-- 統計數據條 -->
+      <div style="display: flex; gap: var(--space-lg); margin-bottom: var(--space-sm); font-size: 0.875rem; color: var(--color-text-secondary);">
+        <span>字數：<strong id="stat-words" style="color: var(--color-text-primary);">0</strong></span>
+        <span>字符數：<strong id="stat-chars" style="color: var(--color-text-primary);">0</strong></span>
+        <span>預估閱讀時間：<strong id="stat-read-time" style="color: var(--color-text-primary);">1 分鐘</strong></span>
+      </div>
+
+      <!-- 左右雙欄編輯器 -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-md); min-height: 520px;">
+        <!-- 左側編輯 -->
+        <div style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin: 0;">Markdown 源代碼：</label>
+            <button class="btn btn--sm btn--ghost" id="btn-copy-raw">複製代碼</button>
+          </div>
+          <textarea class="form-input" id="md-editor" style="flex: 1; min-height: 480px; resize: vertical; font-family: var(--font-mono, monospace); line-height: 1.6;" placeholder="在此開始輸入 Markdown 內容..."></textarea>
+        </div>
+
+        <!-- 右側預覽 -->
+        <div style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin: 0;">即時預覽效果：</label>
+          </div>
+          <div id="preview-pane" style="flex: 1; min-height: 480px; padding: var(--space-md); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow-y: auto; line-height: 1.7;">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

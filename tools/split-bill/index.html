@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="聚餐分帳計算器 — 快速均攤帳單、服務費試算、整數進位與個別加點項目，一鍵複製發送 LINE 群組。Qiyen Toolbox。">
+  <title>分帳計算器 (Split Bill) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">分帳計算器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header">
+        <h1 class="tool-header__title">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">聚餐分帳計算器</span>
+            <span class="tool-header__title-en">Split Bill Calculator</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">聚餐、出遊分帳神器，支援服務費、自訂進位（免找零錢）與個別成員加點，一鍵複製發送 LINE 群組。</p>
+      </header>
+
+      <!-- 輸入區塊 -->
+      <div class="tool-section">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md);">
+          
+          <div class="form-group">
+            <label class="form-label" for="bill-total">帳單總金額 (NT$)：</label>
+            <input type="number" class="form-input" id="bill-total" value="3600" min="0" step="10">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="people-count">分攤人數：</label>
+            <input type="number" class="form-input" id="people-count" value="4" min="1" step="1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="service-fee">服務費比例：</label>
+            <select class="form-input" id="service-fee">
+              <option value="0">免服務費 (0%)</option>
+              <option value="10" selected>一成服務費 (10%)</option>
+              <option value="5">5%</option>
+              <option value="15">15%</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="round-rule">付現整數進位：</label>
+            <select class="form-input" id="round-rule">
+              <option value="exact">精確到元（四捨五入）</option>
+              <option value="ceil-1">每人無條件進位到 1 元</option>
+              <option value="ceil-10" selected>每人進位到 10 元 (好找零)</option>
+              <option value="ceil-50">每人進位到 50 元</option>
+              <option value="ceil-100">每人進位到 100 元</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- 個別成員自訂加點 -->
+        <div style="margin-top: var(--space-lg); border-top: 1px solid var(--color-border); padding-top: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-weight: 700; font-size: 0.9375rem;">個別成員特殊加點 / 預先墊付（選填）</span>
+            <button class="btn btn--sm btn--secondary" id="btn-add-member">+ 新增成員</button>
+          </div>
+          <div id="members-list" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- 動態加入成員 -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 結算結果卡片 -->
+      <div class="tool-section">
+        <div style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(168,85,247,0.08) 100%); border: 2px solid var(--color-accent); border-radius: var(--radius-lg); padding: var(--space-lg);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
+            <div>
+              <span style="font-size: 0.875rem; color: var(--color-text-secondary); text-transform: uppercase;">每人平均應付 (Per Person)</span>
+              <div id="per-person-amount" style="font-size: 2.5rem; font-weight: 800; color: var(--color-accent); line-height: 1.2;">
+                NT$ 990
+              </div>
+            </div>
+            <button class="btn btn--primary" id="btn-copy-bill">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              複製發送至 LINE
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-md); border-top: 1px dashed var(--color-border); padding-top: var(--space-md); font-size: 0.875rem;">
+            <div>
+              <span style="color: var(--color-text-secondary);">帳單總額：</span>
+              <div id="summary-raw" style="font-weight: 700;">NT$ 3,600</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">服務費金額：</span>
+              <div id="summary-service" style="font-weight: 700;">NT$ 360</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">含服務費總計：</span>
+              <div id="summary-final" style="font-weight: 700; color: var(--color-text-primary);">NT$ 3,960</div>
+            </div>
+            <div>
+              <span style="color: var(--color-text-secondary);">實收總計（進位後）：</span>
+              <div id="summary-collected" style="font-weight: 700; color: var(--color-success);">NT$ 3,960</div>
+            </div>
+          </div>
+
+          <div id="member-breakdown" style="margin-top: var(--space-md); font-size: 0.875rem; border-top: 1px solid var(--color-border); padding-top: var(--space-md); display: none;">
+            <!-- 個別明細 -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

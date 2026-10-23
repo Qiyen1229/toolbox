@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")){location.replace(location.pathname+"/"+location.search+location.hash);}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="番茄鐘工作法計時器 — 25 分鐘專注、5 分鐘休息循環、圓環倒數進度、提示鈴聲與標籤頁動態標題。Qiyen Toolbox。">
+  <title>番茄鐘 (Pomodoro Timer) — Qiyen Toolbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../../css/components.css">
+  <link rel="stylesheet" href="../../css/tool-layout.css">
+  <script src="../../js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">Q</div>
+        <span>Qiyen Toolbox</span>
+      </a>
+      <div style="flex:1;"></div>
+      <div class="navbar__actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="切換深色/淺色模式"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主內容 -->
+  <main class="tool-page">
+    <div class="tool-container" style="max-width: 680px;">
+
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="../../index.html">首頁</a>
+        <span class="breadcrumb__separator">›</span>
+        <span class="breadcrumb__current">番茄鐘計時器</span>
+      </div>
+
+      <!-- 工具標題 -->
+      <header class="tool-header" style="text-align: center;">
+        <h1 class="tool-header__title" style="justify-content: center;">
+          <div class="tool-header__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="tool-header__title-group">
+            <span class="tool-header__title-zh">番茄工作法計時器</span>
+            <span class="tool-header__title-en">Pomodoro Timer</span>
+          </div>
+        </h1>
+        <p class="tool-header__description">保持高度專注力！25 分鐘專注衝刺 + 5 分鐘休息放鬆。</p>
+      </header>
+
+      <!-- 模式選單 -->
+      <div style="display: flex; justify-content: center; margin-bottom: var(--space-lg);">
+        <div class="segmented-control" id="timer-modes" style="max-width: 360px;">
+          <button class="segmented-control__item active" data-mode="work" data-mins="25">專注工作 (25m)</button>
+          <button class="segmented-control__item" data-mode="short-break" data-mins="5">短休息 (5m)</button>
+          <button class="segmented-control__item" data-mode="long-break" data-mins="15">長休息 (15m)</button>
+        </div>
+      </div>
+
+      <!-- 計時圓環與數字 -->
+      <div class="tool-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-xl) var(--space-md);">
+        
+        <div style="position: relative; width: 260px; height: 260px;">
+          <!-- SVG 圓弧進度條 -->
+          <svg width="260" height="260" style="transform: rotate(-90deg);">
+            <circle cx="130" cy="130" r="115" stroke="var(--color-border)" stroke-width="12" fill="none" />
+            <circle id="progress-circle" cx="130" cy="130" r="115" stroke="var(--color-accent)" stroke-width="12" stroke-linecap="round" fill="none" stroke-dasharray="722.5" stroke-dashoffset="0" style="transition: stroke-dashoffset 0.8s linear, stroke 0.3s ease;" />
+          </svg>
+
+          <!-- 中間數字 -->
+          <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div id="time-display" style="font-size: 3.5rem; font-weight: 800; font-family: var(--font-mono, monospace); line-height: 1; color: var(--color-text-primary);">
+              25:00
+            </div>
+            <div id="mode-text" style="font-size: 0.875rem; color: var(--color-text-secondary); margin-top: 8px; font-weight: 600;">
+              🎯 專注時間
+            </div>
+          </div>
+        </div>
+
+        <!-- 按鈕操作區 -->
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-xl);">
+          <button class="btn btn--primary" id="btn-toggle" style="padding: 12px 32px; font-size: 1.125rem;">
+            開始專注
+          </button>
+          <button class="btn btn--secondary" id="btn-reset" style="padding: 12px 20px;">
+            重設
+          </button>
+        </div>
+
+        <!-- 完成顆數統計 -->
+        <div style="margin-top: var(--space-xl); font-size: 0.9375rem; display: flex; align-items: center; gap: 8px;">
+          <span>今日已完成：</span>
+          <span id="tomato-count-display" style="font-size: 1.25rem;">0 顆</span>
+          <span id="tomato-icons"></span>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Qiyen Toolbox · 開發者：Qiyen · 所有工具皆在瀏覽器本地執行</p>
+  </footer>
+
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/utils.js"></script>
+  <script src="../../js/tools-registry.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
